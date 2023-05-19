@@ -4,7 +4,7 @@
 - linux albo wsl(sieć można odpalić tylko na unixie)
 
 ## Odpalenie sieci
-Przechodzimy `test-network` i odpalamy skrypt(jeżeli wasz docker potrzebuje sudo to tu też sudo). 
+Przechodzimy `test-network` (w *fabric-samples*) i odpalamy skrypt(jeżeli wasz docker potrzebuje sudo to tu też sudo). 
 Wykonujemy:
 ```
 ./network.sh up createChannel -c mychannel -ca
@@ -16,7 +16,7 @@ To odpali sieć z włączonymi certyfikatami i kanałem `mychannel` na którym z
 W tym momencie sieć powinna być zdatna do interakcji.
 
 ## Odpalenie api
-Umieścić __to__ repo w folderze np *my-api* w lokalizacji:
+Umieścić __to__ repo w folderze np *my-api* w lokalizacji(chodzi o to aby z tego folderu do  `test-network` prowadziła lokalizacja `../../test-network`):
 `fabric-samples/asset-transfer-basic/my-api`.
 Wchodzimy do tego folderu, aby skompilować odpalamy `tsc`. Aby włączyć odpalamy
 ```
