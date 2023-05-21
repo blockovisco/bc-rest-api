@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainGetAllAssets, blockchainInit} from '../blockchain/chaincode'
+import {blockchainGetAllAssets, blockchainInit, blockchainCreateAsset} from '../blockchain/chaincode'
 
 interface Message {
     body: String;
@@ -26,4 +26,15 @@ const getAllAssets = async (req: Request, res: Response, next: NextFunction) => 
     });
 };
 
-export default { initLedger, getAllAssets}
+const createAsset = async (req: Request, res: Response, next: NextFunction) => {
+    // get some posts
+    let amount: string = req.params.amount;
+
+    const result = await blockchainCreateAsset(amount);
+
+    return res.status(200).json({
+        message: result
+    });
+};
+
+export default { initLedger, getAllAssets, createAsset}
