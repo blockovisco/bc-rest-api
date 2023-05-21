@@ -21,13 +21,14 @@ Natomiast lepiej już odpalić [nasz](https://github.com/blockovisco/smart-contr
 W tym momencie sieć powinna być zdatna do interakcji.
 
 ## Odpalenie api
-Umieścić __to__ repo w folderze np *my-api* w lokalizacji(chodzi o to aby z tego folderu do  `test-network` prowadziła lokalizacja `../../test-network`):
-`fabric-samples/asset-transfer-basic/my-api`.
+Umieścić __to__ repo w folderze np *my-api* w lokalizacji:
+`fabric-samples/asset-transfer-basic/my-api` (chodzi o to aby z tego folderu do  `test-network` prowadziła lokalizacja `../../test-network`).
 Wchodzimy do tego folderu, aby skompilować odpalamy `tsc`. Aby włączyć odpalamy
 ```
 sudo npm start
 ```
 
 ## Endpointy
-- init - tworzy jakies assety
-- all - zwraca wszystkie assety
+- ~~`/init` - tworzy jakies assety~~
+- `/all` - zwraca wszystkie assety
+- `/create/energy/{amount}` - tworzy asset energi i daje ownera jako tego kto ma identity w aplikacji

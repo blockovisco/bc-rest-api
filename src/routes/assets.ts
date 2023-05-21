@@ -4,6 +4,6 @@ const router = express.Router();
 
 router.get('/init', controller.initLedger);
 router.get('/all', controller.getAllAssets);
-router.get('/create/:amount', controller.createAsset);
+router.get('/create/energy/:amount', controller.createAsset);
 
 export = router;
