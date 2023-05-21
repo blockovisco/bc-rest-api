@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import {blockchainGetAllAssets, blockchainInit, blockchainCreateAsset} from '../blockchain/chaincode'
 
-interface Message {
-    body: String;
-}
-
 const initLedger = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
     

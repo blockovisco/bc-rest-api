@@ -35,6 +35,7 @@ const peerHostAlias = 'peer0.org1.example.com';
 
 const utf8Decoder = new TextDecoder();
 const assetId = `asset${Date.now()}`;
+const offerId = `offer${Date.now()}`;
 
 export const blockchainGetAllAssets = async () => {
     return await connectAndExecute(getAllAssets, []);
@@ -46,6 +47,10 @@ export const blockchainInit = async () => {
 
 export const blockchainCreateAsset = async (amount: string) => {
     return await connectAndExecute(createEnergyAsset, [amount, peerHostAlias])
+}
+
+export const blockchainCreateOffer = async(price: number, amount: number) => {
+    return await connectAndExecute(createOffer, [price.toString(), amount.toString(), peerHostAlias])
 }
 
 const connectAndExecute = async (func: Function, args: Array<string>) => {
@@ -135,6 +140,14 @@ async function getAllAssets(contract: Contract, args: Array<string>): Promise<JS
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
+    return result;
+}
+
+async function createOffer(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Evaluate Transaction: CreateOffers, function creates and offer');
+
+    await contract.evaluateTransaction('CreateOffer', offerId, args[0], args[1], args[2]);
+    const result = JSON.parse('{"added": true}');
     return result;
 }
 
