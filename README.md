@@ -9,10 +9,15 @@ Wykonujemy:
 ```
 ./network.sh up createChannel -c mychannel -ca
 ```
-To odpali sieć z włączonymi certyfikatami i kanałem `mychannel` na którym zostaną połączeni *org1* i *org2*. Następnie odpalamy smart-contract:
+To odpali sieć z włączonymi certyfikatami i kanałem `mychannel` na którym zostaną połączeni *org1* i *org2*. Następnie odpalamy smart-contract, Można odpalić ich testowy czyli:
 ```
 ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-typescript/ -ccl typescript
 ```
+Natomiast lepiej już odpalić [nasz](https://github.com/blockovisco/smart-contracts), wtedy zamiast tej ścieżki u góry podajemy tą do folderu z kodem. 
+
+
+**Uwaga!** W pliku `src/blockchain/chaincode.ts` definiujemy nazwę smart kontraktu na jakim działamy (`const chaincodeName` gdzieś u góry pliku). Taką samą należy podać w komendzie u góry po argumencie *-ccn*. Na czas pisania tego to było `mysc` 
+
 W tym momencie sieć powinna być zdatna do interakcji.
 
 ## Odpalenie api
