@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainCreateOffer} from '../blockchain/chaincode'
+import {blockchainCreateOffer, blockchainAssetExists} from '../blockchain/chaincode'
 
-const getAllOffers = async (req: Request, res: Response, next: NextFunction) => {
+const createOffer = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
     let price = 1.2
     let amount = 5
@@ -13,4 +13,16 @@ const getAllOffers = async (req: Request, res: Response, next: NextFunction) => 
     });
 };
 
-export default { getAllOffers}
+const assetExists = async (req: Request, res: Response, next: NextFunction) => {
+    // get some posts
+
+    let id: string = req.params.id;
+    
+    const result = await blockchainAssetExists(id);
+
+    return res.status(200).json({
+        message: result
+    });
+};
+
+export default { createOffer, assetExists}

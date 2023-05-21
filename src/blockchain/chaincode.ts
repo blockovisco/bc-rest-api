@@ -53,6 +53,11 @@ export const blockchainCreateOffer = async(price: number, amount: number) => {
     return await connectAndExecute(createOffer, [price.toString(), amount.toString(), peerHostAlias])
 }
 
+export const blockchainAssetExists = async(id: string) => {
+    console.log("sprawdzanie "+id)
+    return await connectAndExecute(assetExists, [id])
+}
+
 const connectAndExecute = async (func: Function, args: Array<string>) => {
     var result = null;
 
@@ -144,12 +149,30 @@ async function getAllAssets(contract: Contract, args: Array<string>): Promise<JS
 }
 
 async function createOffer(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: CreateOffers, function creates and offer');
+    console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
 
-    await contract.evaluateTransaction('CreateOffer', offerId, args[0], args[1], args[2]);
-    const result = JSON.parse('{"added": true}');
+    const resultBytes = await contract.submitTransaction(
+        'CreateOffer',
+        offerId,
+        args[0],
+        args[1],
+        args[2]
+    );
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
+async function assetExists(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Evaluate Transaction: Check if asset exists');
+
+    const resultBytes = await contract.evaluateTransaction('AssetExists', args[0]);
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
     return result;
 }
+
+
 
 /**
  * Submit a transaction synchronously, blocking until it has been committed to the ledger.
