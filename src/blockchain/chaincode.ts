@@ -66,8 +66,12 @@ export const blockchainGetAllOffers = async () => {
     return await connectAndExecute(getAllOffers, []);
 }
 
-export const blockchainGetEcoinsOf = async(user: string) => {
+export const blockchainGetListOfEcoinsOf = async function(user: string) {
     return await connectAndExecute(getEcoinsOfUser, [user])
+}
+
+export const blockchainGetEcoinsOf = async function(user: string) {
+    return await getSumOfEcoinsOf(user)
 }
 
 const connectAndExecute = async (func: Function, args: Array<string>) => {
@@ -255,6 +259,12 @@ async function createEcoinAsset(contract: Contract, args: Array<string>): Promis
     const result = JSON.parse(res)
 
     return result
+}
+
+async function getSumOfEcoinsOf(owner: string): Promise<number> {
+    var result: Array<Asset> = await blockchainGetListOfEcoinsOf(owner)
+    var sum = result.map(asset => asset.amount).reduce((acc, amount) => acc + amount);
+    return sum;
 }
 
 /**

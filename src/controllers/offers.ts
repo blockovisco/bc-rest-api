@@ -41,7 +41,7 @@ const getEcoinsOf = async (req: Request, res: Response, next: NextFunction) => {
     const result = await blockchainGetEcoinsOf(user);
 
     return res.status(200).json({
-        message: result
+        ecoins: result
     });
 };
 
