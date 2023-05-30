@@ -11,5 +11,6 @@ router.get('/create/offer/:amount/:price', controllerOffers.createOffer);
 router.get('/offers', controllerOffers.getAllOffers);
 router.get('/exist/:id', controllerOffers.assetExists);
 router.get('/ecoins/:user', controllerOffers.getEcoinsOf);
+router.get('/energy/:user', controllerOffers.getEnergyOf);
 
 export = router;

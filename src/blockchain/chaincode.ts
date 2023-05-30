@@ -70,8 +70,16 @@ export const blockchainGetListOfEcoinsOf = async function(user: string) {
     return await connectAndExecute(getEcoinsOfUser, [user])
 }
 
+export const blockchainGetListOfEnergyOf = async function(user: string) {
+    return await connectAndExecute(getEnergyOfUser, [user])
+}
+
 export const blockchainGetEcoinsOf = async function(user: string) {
     return await getSumOfEcoinsOf(user)
+}
+
+export const blockchainGetEnergyOf = async function(user: string) {
+    return await getSumOfEnergyOf(user)
 }
 
 const connectAndExecute = async (func: Function, args: Array<string>) => {
@@ -179,6 +187,21 @@ async function getEcoinsOfUser(contract: Contract, args: Array<string>): Promise
     return ecoinsOf;
 }
 
+async function getEnergyOfUser(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+
+    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'en' ,'eo');
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+
+    var energyOf = result.filter(function(a: Asset){
+        return a.owner == args[0]
+    })
+
+    return energyOf;
+}
+
 async function getAllOffers(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
 
@@ -263,6 +286,14 @@ async function createEcoinAsset(contract: Contract, args: Array<string>): Promis
 
 async function getSumOfEcoinsOf(owner: string): Promise<number> {
     var result: Array<Asset> = await blockchainGetListOfEcoinsOf(owner)
+    if(result == null || result.length == 0) return 0;
+    var sum = result.map(asset => asset.amount).reduce((acc, amount) => acc + amount);
+    return sum;
+}
+
+async function getSumOfEnergyOf(owner: string): Promise<number> {
+    var result: Array<Asset> = await blockchainGetListOfEnergyOf(owner)
+    if(result == null || result.length == 0) return 0;
     var sum = result.map(asset => asset.amount).reduce((acc, amount) => acc + amount);
     return sum;
 }
