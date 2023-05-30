@@ -10,11 +10,12 @@ import * as crypto from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { TextDecoder } from 'util';
+import { Asset } from './asset';
 
 const channelName = 'mychannel';
 const chaincodeName = 'mysc'
-const mspId = 'Org1MSP'
-const appOrg = 'org1.example.com'
+const mspId = 'Org2MSP'
+const appOrg = 'org2.example.com'
 
 // Path to crypto materials.
 const cryptoPath = path.resolve(__dirname, '..', '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', appOrg);
@@ -29,7 +30,7 @@ const certPath = path.resolve(cryptoPath, 'users', 'User1@' + appOrg, 'msp', 'si
 const tlsCertPath = path.resolve(cryptoPath, 'peers', 'peer0.' + appOrg, 'tls', 'ca.crt');
 
 // Gateway peer endpoint.
-const peerEndpoint = 'localhost:7051';
+const peerEndpoint = 'localhost:9051';
 
 // Gateway peer SSL host name override.
 const peerHostAlias = 'peer0.' + appOrg;
@@ -58,12 +59,15 @@ export const blockchainCreateOffer = async(price: number, amount: number) => {
 }
 
 export const blockchainAssetExists = async(id: string) => {
-    console.log("sprawdzanie "+id)
     return await connectAndExecute(assetExists, [id])
 }
 
 export const blockchainGetAllOffers = async () => {
     return await connectAndExecute(getAllOffers, []);
+}
+
+export const blockchainGetEcoinsOf = async(user: string) => {
+    return await connectAndExecute(getEcoinsOfUser, [user])
 }
 
 const connectAndExecute = async (func: Function, args: Array<string>) => {
@@ -154,6 +158,21 @@ async function getAllAssets(contract: Contract, args: Array<string>): Promise<JS
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
     return result;
+}
+
+async function getEcoinsOfUser(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+
+    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'ec' ,'ed');
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+
+    var ecoinsOf = result.filter(function(a: Asset){
+        return a.owner == args[0]
+    })
+
+    return ecoinsOf;
 }
 
 async function getAllOffers(contract: Contract, args: Array<string>): Promise<JSON> {

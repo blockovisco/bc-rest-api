@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers} from '../blockchain/chaincode'
+import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers, blockchainGetEcoinsOf} from '../blockchain/chaincode'
 
 const createOffer = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
@@ -33,4 +33,16 @@ const getAllOffers =async (req: Request, res: Response, next: NextFunction) => {
     });
 }
 
-export default { createOffer, assetExists, getAllOffers }
+const getEcoinsOf = async (req: Request, res: Response, next: NextFunction) => {
+    // get some posts
+
+    let user: string = req.params.user;
+    
+    const result = await blockchainGetEcoinsOf(user);
+
+    return res.status(200).json({
+        message: result
+    });
+};
+
+export default { createOffer, assetExists, getAllOffers, getEcoinsOf }
