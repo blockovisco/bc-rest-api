@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainCreateOffer, blockchainAssetExists} from '../blockchain/chaincode'
+import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers} from '../blockchain/chaincode'
 
 const createOffer = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
-    let price = 1.2
-    let amount = 5
+    let amount = parseFloat(req.params.amount);
+    let price = parseFloat(req.params.price);
 
     const result = await blockchainCreateOffer(price, amount);
 
@@ -25,4 +25,12 @@ const assetExists = async (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-export default { createOffer, assetExists}
+const getAllOffers =async (req: Request, res: Response, next: NextFunction) => {
+    const result = await blockchainGetAllOffers();
+
+    return res.status(200).json({
+        message: result
+    });
+}
+
+export default { createOffer, assetExists, getAllOffers }

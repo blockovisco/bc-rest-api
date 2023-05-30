@@ -14,28 +14,28 @@ import { TextDecoder } from 'util';
 const channelName = 'mychannel';
 const chaincodeName = 'mysc'
 const mspId = 'Org1MSP'
+const appOrg = 'org1.example.com'
 
 // Path to crypto materials.
-const cryptoPath = path.resolve(__dirname, '..', '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com');
+const cryptoPath = path.resolve(__dirname, '..', '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', appOrg);
 
 // Path to user private key directory.
-const keyDirectoryPath = path.resolve(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'keystore');
+const keyDirectoryPath = path.resolve(cryptoPath, 'users', 'User1@' + appOrg, 'msp', 'keystore');
 
 // Path to user certificate.
-const certPath = path.resolve(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'signcerts', 'cert.pem');
+const certPath = path.resolve(cryptoPath, 'users', 'User1@' + appOrg, 'msp', 'signcerts', 'cert.pem');
 
 // Path to peer tls certificate.
-const tlsCertPath = path.resolve(cryptoPath, 'peers', 'peer0.org1.example.com', 'tls', 'ca.crt');
+const tlsCertPath = path.resolve(cryptoPath, 'peers', 'peer0.' + appOrg, 'tls', 'ca.crt');
 
 // Gateway peer endpoint.
 const peerEndpoint = 'localhost:7051';
 
 // Gateway peer SSL host name override.
-const peerHostAlias = 'peer0.org1.example.com';
+const peerHostAlias = 'peer0.' + appOrg;
 
 const utf8Decoder = new TextDecoder();
-const assetId = `asset${Date.now()}`;
-const offerId = `offer${Date.now()}`;
+
 
 export const blockchainGetAllAssets = async () => {
     return await connectAndExecute(getAllAssets, []);
@@ -45,8 +45,12 @@ export const blockchainInit = async () => {
     await connectAndExecute(initLedger, []);
 }
 
-export const blockchainCreateAsset = async (amount: string) => {
+export const blockchainCreateEnergy = async (amount: string) => {
     return await connectAndExecute(createEnergyAsset, [amount, peerHostAlias])
+}
+
+export const blockchainCreateEcoin = async (amount: string) => {
+    return await connectAndExecute(createEcoinAsset, [amount, peerHostAlias])
 }
 
 export const blockchainCreateOffer = async(price: number, amount: number) => {
@@ -56,6 +60,10 @@ export const blockchainCreateOffer = async(price: number, amount: number) => {
 export const blockchainAssetExists = async(id: string) => {
     console.log("sprawdzanie "+id)
     return await connectAndExecute(assetExists, [id])
+}
+
+export const blockchainGetAllOffers = async () => {
+    return await connectAndExecute(getAllOffers, []);
 }
 
 const connectAndExecute = async (func: Function, args: Array<string>) => {
@@ -141,7 +149,17 @@ async function initLedger(contract: Contract, args: Array<string>): Promise<void
 async function getAllAssets(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
 
-    const resultBytes = await contract.evaluateTransaction('GetAllAssets');
+    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', '' ,'');
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result;
+}
+
+async function getAllOffers(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+
+    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'o' ,'p');
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
@@ -151,6 +169,7 @@ async function getAllAssets(contract: Contract, args: Array<string>): Promise<JS
 async function createOffer(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
 
+    const offerId = `offer${Date.now()}`;
     const resultBytes = await contract.submitTransaction(
         'CreateOffer',
         offerId,
@@ -180,6 +199,7 @@ async function assetExists(contract: Contract, args: Array<string>): Promise<JSO
 async function createEnergyAsset(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
 
+    const assetId = `energy${Date.now()}`;
     await contract.submitTransaction(
         'CreateAsset',
         assetId,
@@ -197,6 +217,27 @@ async function createEnergyAsset(contract: Contract, args: Array<string>): Promi
     return result
 }
 
+async function createEcoinAsset(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: CreateAsset, ecoin, owner: ' + args[1] + ' amount: ', args[0]);
+
+    const assetId = `ecoin${Date.now()}`;
+    await contract.submitTransaction(
+        'CreateAsset',
+        assetId,
+        'ecoin',
+        args[0],
+        args[1]
+    );
+
+    let res = '{ "ID": "'+assetId+'", "Name": "ecoin", "Amount:": "' + args[0] + '", "Owner": "' + args[1] + '" }'
+    console.log('*** Transaction committed successfully:');
+    console.log(res)
+
+    const result = JSON.parse(res)
+
+    return result
+}
+
 /**
  * Submit transaction asynchronously, allowing the application to process the smart contract response (e.g. update a UI)
  * while waiting for the commit notification.
@@ -205,7 +246,7 @@ async function transferAssetAsync(contract: Contract): Promise<void> {
     console.log('\n--> Async Submit Transaction: TransferAsset, updates existing asset owner');
 
     const commit = await contract.submitAsync('TransferAsset', {
-        arguments: [assetId, 'Saptha'],
+        arguments: ['assetId', 'Saptha'],
     });
     const oldOwner = utf8Decoder.decode(commit.getResult());
 
@@ -223,7 +264,7 @@ async function transferAssetAsync(contract: Contract): Promise<void> {
 async function readAssetByID(contract: Contract): Promise<void> {
     console.log('\n--> Evaluate Transaction: ReadAsset, function returns asset attributes');
 
-    const resultBytes = await contract.evaluateTransaction('ReadAsset', assetId);
+    const resultBytes = await contract.evaluateTransaction('ReadAsset', 'assetId');
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);

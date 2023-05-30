@@ -6,7 +6,9 @@ const router = express.Router();
 router.get('/init', controller.initLedger);
 router.get('/all', controller.getAllAssets);
 router.get('/create/energy/:amount', controller.createAsset);
-router.get('/offers', controllerOffers.createOffer);
+router.get('/create/ecoin/:amount', controller.createEcoin);
+router.get('/create/offer/:amount/:price', controllerOffers.createOffer);
+router.get('/offers', controllerOffers.getAllOffers);
 router.get('/exist/:id', controllerOffers.assetExists);
 
 export = router;
