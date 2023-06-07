@@ -32,3 +32,9 @@ sudo npm start
 - ~~`/init` - tworzy jakies assety~~
 - `/all` - zwraca wszystkie assety
 - `/create/energy/{amount}` - tworzy asset energi i daje ownera jako tego kto ma identity w aplikacji
+- `/create/ecoin/{amount}` - tworzy asset ecoina i daje ownera jako tego kto ma identity w aplikacji
+- `/create/offer/{amount}/{price}` - tworzy ofertę sprzedaży energii, przyjmuje parametry ilość oraz cenę
+- `/offers/` - zwraca wszystkie oferty
+- `/exist/{id}` - zwraca informacje czy dany zasób o określonym id istnieje
+- `/ecoins/{user}` - zwraca wszystkie assety ecoina które są powiązane z danym userem
+- `/energy/{user}` - zwraca wszystkie assety energii które są powiązane z danym userem
