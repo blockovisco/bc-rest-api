@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainGetAllAssets, blockchainInit, blockchainCreateEnergy, blockchainCreateEcoin, blockchainCreateProducerAsset} from '../blockchain/chaincode'
+import {blockchainGetAllAssets, blockchainInit, blockchainCreateEnergy, blockchainCreateEcoin, blockchainCreateProducerAsset, blockchainUpdateProducerAsset} from '../blockchain/chaincode'
 
 const initLedger = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
@@ -14,6 +14,15 @@ const createProducerAsset = async (req: Request, res: Response, next: NextFuncti
     // get some posts
     
     const result = await blockchainCreateProducerAsset();
+
+    return res.status(200).json(result);
+};
+
+const updateProducerAsset = async (req: Request, res: Response, next: NextFunction) => {
+    
+    let producing: number = Number(req.params.prod);
+    
+    const result = await blockchainUpdateProducerAsset(producing);
 
     return res.status(200).json(result);
 };
@@ -44,4 +53,4 @@ const createEcoin = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json(result);
 };
 
-export default { initLedger, getAllAssets, createAsset, createEcoin, createProducerAsset}
+export default { initLedger, getAllAssets, createAsset, createEcoin, createProducerAsset, updateProducerAsset}

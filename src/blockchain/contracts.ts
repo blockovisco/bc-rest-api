@@ -82,6 +82,19 @@ export async function createProducerAsset(contract: Contract, args: Array<string
     return result
 }
 
+export async function updateProducerAsset(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: updateProducerAsset -> '+args[0]+': '+args[1]);
+    
+    const resultBytes = await contract.submitTransaction(
+        'UpdateProducerAsset',
+        args[0],
+        args[1]
+    );
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
 export async function createOffer(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
 

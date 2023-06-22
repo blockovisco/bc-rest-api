@@ -78,6 +78,10 @@ export const blockchainGetEcoinsOf = async function(user: string) {
     return await contracts.getSumOfEcoinsOf(user)
 }
 
+export const blockchainUpdateProducerAsset = async function(producing: number) {
+    return await connectAndExecute(contracts.updateProducerAsset, [peerHostAlias, String(producing)]);
+}
+
 
 const connectAndExecute = async (func: Function, args: Array<string>) => {
     var result = null;

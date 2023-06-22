@@ -9,6 +9,7 @@ router.get('/create/producer', controllerAssets.createProducerAsset);
 router.get('/create/energy/:amount', controllerAssets.createAsset);
 router.get('/create/ecoin/:amount', controllerAssets.createEcoin);
 router.get('/create/offer/:amount/:price', controllerOffers.createOffer);
+router.get('/update/producer/:prod', controllerAssets.updateProducerAsset);
 router.get('/offers', controllerOffers.getAllOffers);
 router.get('/exist/:id', controllerOffers.assetExists);
 router.get('/ecoins/:user', controllerOffers.getEcoinsOf);
