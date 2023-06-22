@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainGetAllAssets, blockchainInit, blockchainCreateEnergy, blockchainCreateEcoin} from '../blockchain/chaincode'
+import {blockchainGetAllAssets, blockchainInit, blockchainCreateEnergy, blockchainCreateEcoin, blockchainCreateProducerAsset} from '../blockchain/chaincode'
 
 const initLedger = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
@@ -7,9 +7,15 @@ const initLedger = async (req: Request, res: Response, next: NextFunction) => {
     blockchainInit();
     let msg = "Initialized succesfully"
 
-    return res.status(200).json({
-        message: msg
-    });
+    return res.status(200).json(msg);
+};
+
+const createProducerAsset = async (req: Request, res: Response, next: NextFunction) => {
+    // get some posts
+    
+    const result = await blockchainCreateProducerAsset();
+
+    return res.status(200).json(result);
 };
 
 const getAllAssets = async (req: Request, res: Response, next: NextFunction) => {
@@ -17,9 +23,7 @@ const getAllAssets = async (req: Request, res: Response, next: NextFunction) => 
     
     const result = await blockchainGetAllAssets();
 
-    return res.status(200).json({
-        message: result
-    });
+    return res.status(200).json(result);
 };
 
 const createAsset = async (req: Request, res: Response, next: NextFunction) => {
@@ -28,9 +32,7 @@ const createAsset = async (req: Request, res: Response, next: NextFunction) => {
 
     const result = await blockchainCreateEnergy(amount);
 
-    return res.status(200).json({
-        message: result
-    });
+    return res.status(200).json(result);
 };
 
 const createEcoin = async (req: Request, res: Response, next: NextFunction) => {
@@ -39,9 +41,7 @@ const createEcoin = async (req: Request, res: Response, next: NextFunction) => {
 
     const result = await blockchainCreateEcoin(amount);
 
-    return res.status(200).json({
-        message: result
-    });
+    return res.status(200).json(result);
 };
 
-export default { initLedger, getAllAssets, createAsset, createEcoin}
+export default { initLedger, getAllAssets, createAsset, createEcoin, createProducerAsset}

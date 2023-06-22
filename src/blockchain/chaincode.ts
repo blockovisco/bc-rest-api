@@ -5,12 +5,11 @@
  */
 
 import * as grpc from '@grpc/grpc-js';
-import { connect, Contract, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
+import { connect, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
 import * as crypto from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { TextDecoder } from 'util';
-import { Asset } from './asset';
+import * as contracts from './contracts'
 
 const channelName = 'mychannel';
 const chaincodeName = 'mysc'
@@ -35,52 +34,50 @@ const peerEndpoint = 'localhost:9051';
 // Gateway peer SSL host name override.
 const peerHostAlias = 'peer0.' + appOrg;
 
-const utf8Decoder = new TextDecoder();
-
+export const blockchainCreateProducerAsset =async () => {
+    return await connectAndExecute(contracts.createProducerAsset, [peerHostAlias]);
+}
 
 export const blockchainGetAllAssets = async () => {
-    return await connectAndExecute(getAllAssets, []);
+    return await connectAndExecute(contracts.getAllAssets, []);
 }
 
 export const blockchainInit = async () => {
-    await connectAndExecute(initLedger, []);
+    await connectAndExecute(contracts.initLedger, []);
 }
 
 export const blockchainCreateEnergy = async (amount: string) => {
-    return await connectAndExecute(createEnergyAsset, [amount, peerHostAlias])
+    return await connectAndExecute(contracts.createEnergyAsset, [amount, peerHostAlias])
 }
 
 export const blockchainCreateEcoin = async (amount: string) => {
-    return await connectAndExecute(createEcoinAsset, [amount, peerHostAlias])
+    return await connectAndExecute(contracts.createEcoinAsset, [amount, peerHostAlias])
 }
 
 export const blockchainCreateOffer = async(price: number, amount: number) => {
-    return await connectAndExecute(createOffer, [price.toString(), amount.toString(), peerHostAlias])
+    return await connectAndExecute(contracts.createOffer, [price.toString(), amount.toString(), peerHostAlias])
 }
 
 export const blockchainAssetExists = async(id: string) => {
-    return await connectAndExecute(assetExists, [id])
+    return await connectAndExecute(contracts.assetExists, [id])
 }
 
 export const blockchainGetAllOffers = async () => {
-    return await connectAndExecute(getAllOffers, []);
+    return await connectAndExecute(contracts.getAllOffers, []);
 }
 
 export const blockchainGetListOfEcoinsOf = async function(user: string) {
-    return await connectAndExecute(getEcoinsOfUser, [user])
+    return await connectAndExecute(contracts.getEcoinsOfUser, [user])
 }
 
 export const blockchainGetListOfEnergyOf = async function(user: string) {
-    return await connectAndExecute(getEnergyOfUser, [user])
+    return await connectAndExecute(contracts.getEnergyOfUser, [user])
 }
 
 export const blockchainGetEcoinsOf = async function(user: string) {
-    return await getSumOfEcoinsOf(user)
+    return await contracts.getSumOfEcoinsOf(user)
 }
 
-export const blockchainGetEnergyOf = async function(user: string) {
-    return await getSumOfEnergyOf(user)
-}
 
 const connectAndExecute = async (func: Function, args: Array<string>) => {
     var result = null;
@@ -145,218 +142,6 @@ async function newSigner(): Promise<Signer> {
     const privateKeyPem = await fs.readFile(keyPath);
     const privateKey = crypto.createPrivateKey(privateKeyPem);
     return signers.newPrivateKeySigner(privateKey);
-}
-
-/**
- * This type of transaction would typically only be run once by an application the first time it was started after its
- * initial deployment. A new version of the chaincode deployed later would likely not need to run an "init" function.
- */
-async function initLedger(contract: Contract, args: Array<string>): Promise<void> {
-    console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-
-    await contract.submitTransaction('InitLedger');
-
-    console.log('*** Transaction committed successfully');
-}
-
-/**
- * Evaluate a transaction to query ledger state.
- */
-async function getAllAssets(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
-
-    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', '' ,'');
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
-    return result;
-}
-
-async function getEcoinsOfUser(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
-
-    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'ec' ,'ed');
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
-
-    var ecoinsOf = result.filter(function(a: Asset){
-        return a.owner == args[0]
-    })
-
-    return ecoinsOf;
-}
-
-async function getEnergyOfUser(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
-
-    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'en' ,'eo');
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
-
-    var energyOf = result.filter(function(a: Asset){
-        return a.owner == args[0]
-    })
-
-    return energyOf;
-}
-
-async function getAllOffers(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
-
-    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'o' ,'p');
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
-    return result;
-}
-
-async function createOffer(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
-
-    const offerId = `offer${Date.now()}`;
-    const resultBytes = await contract.submitTransaction(
-        'CreateOffer',
-        offerId,
-        args[0],
-        args[1],
-        args[2]
-    );
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
-    return result
-}
-
-async function assetExists(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: Check if asset exists');
-
-    const resultBytes = await contract.evaluateTransaction('AssetExists', args[0]);
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
-    return result;
-}
-
-
-
-/**
- * Submit a transaction synchronously, blocking until it has been committed to the ledger.
- */
-async function createEnergyAsset(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Submit Transaction: CreateAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
-
-    const assetId = `energy${Date.now()}`;
-    await contract.submitTransaction(
-        'CreateAsset',
-        assetId,
-        'energy',
-        args[0],
-        args[1]
-    );
-
-    let res = '{ "ID": "'+assetId+'", "Name": "energy", "Amount:": "' + args[0] + '", "Owner": "' + args[1] + '" }'
-    console.log('*** Transaction committed successfully:');
-    console.log(res)
-
-    const result = JSON.parse(res)
-
-    return result
-}
-
-async function createEcoinAsset(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Submit Transaction: CreateAsset, ecoin, owner: ' + args[1] + ' amount: ', args[0]);
-
-    const assetId = `ecoin${Date.now()}`;
-    await contract.submitTransaction(
-        'CreateAsset',
-        assetId,
-        'ecoin',
-        args[0],
-        args[1]
-    );
-
-    let res = '{ "ID": "'+assetId+'", "Name": "ecoin", "Amount:": "' + args[0] + '", "Owner": "' + args[1] + '" }'
-    console.log('*** Transaction committed successfully:');
-    console.log(res)
-
-    const result = JSON.parse(res)
-
-    return result
-}
-
-async function getSumOfEcoinsOf(owner: string): Promise<number> {
-    var result: Array<Asset> = await blockchainGetListOfEcoinsOf(owner)
-    if(result == null || result.length == 0) return 0;
-    var sum = result.map(asset => asset.amount).reduce((acc, amount) => acc + amount);
-    return sum;
-}
-
-async function getSumOfEnergyOf(owner: string): Promise<number> {
-    var result: Array<Asset> = await blockchainGetListOfEnergyOf(owner)
-    if(result == null || result.length == 0) return 0;
-    var sum = result.map(asset => asset.amount).reduce((acc, amount) => acc + amount);
-    return sum;
-}
-
-/**
- * Submit transaction asynchronously, allowing the application to process the smart contract response (e.g. update a UI)
- * while waiting for the commit notification.
- */
-async function transferAssetAsync(contract: Contract): Promise<void> {
-    console.log('\n--> Async Submit Transaction: TransferAsset, updates existing asset owner');
-
-    const commit = await contract.submitAsync('TransferAsset', {
-        arguments: ['assetId', 'Saptha'],
-    });
-    const oldOwner = utf8Decoder.decode(commit.getResult());
-
-    console.log(`*** Successfully submitted transaction to transfer ownership from ${oldOwner} to Saptha`);
-    console.log('*** Waiting for transaction commit');
-
-    const status = await commit.getStatus();
-    if (!status.successful) {
-        throw new Error(`Transaction ${status.transactionId} failed to commit with status code ${status.code}`);
-    }
-
-    console.log('*** Transaction committed successfully');
-}
-
-async function readAssetByID(contract: Contract): Promise<void> {
-    console.log('\n--> Evaluate Transaction: ReadAsset, function returns asset attributes');
-
-    const resultBytes = await contract.evaluateTransaction('ReadAsset', 'assetId');
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
-    console.log('*** Result:', result);
-}
-
-/**
- * submitTransaction() will throw an error containing details of any error responses from the smart contract.
- */
-async function updateNonExistentAsset(contract: Contract): Promise<void>{
-    console.log('\n--> Submit Transaction: UpdateAsset asset70, asset70 does not exist and should return an error');
-
-    try {
-        await contract.submitTransaction(
-            'UpdateAsset',
-            'asset70',
-            'blue',
-            '5',
-            'Tomoko',
-            '300',
-        );
-        console.log('******** FAILED to return an error');
-    } catch (error) {
-        console.log('*** Successfully caught the error: \n', error);
-    }
-}
-
-/**
- * envOrDefault() will return the value of an environment variable, or a default value if the variable is undefined.
- */
-function envOrDefault(key: string, defaultValue: string): string {
-    return process.env[key] || defaultValue;
 }
 
 /**
