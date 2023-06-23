@@ -102,14 +102,14 @@ export async function updateProducerAsset(contract: Contract, args: Array<string
 
 export async function createOffer(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
-
     const offerId = `offer${Date.now()}`;
     const resultBytes = await contract.submitTransaction(
         'CreateOffer',
         offerId,
-        args[0],
-        args[1],
-        args[2]
+        args[0], // price
+        args[1], // maxAmount
+        args[2], // effectiveDate
+        args[3]  // peerHostAlias
     );
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);

@@ -3,10 +3,12 @@ import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers, bl
 
 const createOffer = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
-    let amount = parseFloat(req.params.amount);
+    //:maxAmount/:price/:effectiveDate
+    let maxAmount = parseFloat(req.params.maxAmount);
     let price = parseFloat(req.params.price);
+    let effectiveDate = req.params.effectiveDate;
 
-    const result = await blockchainCreateOffer(price, amount);
+    const result = await blockchainCreateOffer(price, maxAmount, effectiveDate);
 
     return res.status(200).json(result);
 };
