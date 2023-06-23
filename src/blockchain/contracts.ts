@@ -73,10 +73,15 @@ export async function getAllOffers(contract: Contract, args: Array<string>): Pro
 export async function createProducerAsset(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: createProducerAsset');
     
+    console.log(args[0], args[1], args[2]);
+    
     const resultBytes = await contract.submitTransaction(
         'CreateProducerAsset',
-        args[0]
+        args[0], //owner
+        args[1], //latitude
+        args[2] // longtitude
     );
+
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
     return result

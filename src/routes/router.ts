@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/init', controllerAssets.initLedger);
 router.get('/all', controllerAssets.getAllAssets);
-router.get('/create/producer', controllerAssets.createProducerAsset);
+router.get('/create/producer/:lat/:lon', controllerAssets.createProducerAsset);
 router.get('/create/energy/:amount', controllerAssets.createAsset);
 router.get('/create/ecoin/:amount', controllerAssets.createEcoin);
 router.get('/create/offer/:amount/:price', controllerOffers.createOffer);

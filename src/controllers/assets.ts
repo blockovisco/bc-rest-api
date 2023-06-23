@@ -13,7 +13,10 @@ const initLedger = async (req: Request, res: Response, next: NextFunction) => {
 const createProducerAsset = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
     
-    const result = await blockchainCreateProducerAsset();
+    let latitude: number = Number(req.params.lat)
+    let longtitude: number = Number(req.params.lon)
+    
+    const result = await blockchainCreateProducerAsset(latitude, longtitude);
 
     return res.status(200).json(result);
 };

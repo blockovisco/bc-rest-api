@@ -34,8 +34,8 @@ const peerEndpoint = 'localhost:9051';
 // Gateway peer SSL host name override.
 const peerHostAlias = 'peer0.' + appOrg;
 
-export const blockchainCreateProducerAsset =async () => {
-    return await connectAndExecute(contracts.createProducerAsset, [peerHostAlias]);
+export const blockchainCreateProducerAsset = async (latitude: number, longtitude: number) => {
+    return await connectAndExecute(contracts.createProducerAsset, [peerHostAlias, String(latitude), String(longtitude)]);
 }
 
 export const blockchainGetAllAssets = async () => {
