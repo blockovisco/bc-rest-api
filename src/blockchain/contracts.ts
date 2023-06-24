@@ -145,6 +145,37 @@ export async function createOffer(contract: Contract, args: Array<string>): Prom
     const result = JSON.parse(resultJson);
     return result
 }
+/**contracts.createPeerContract, [peerHostAlias]
+contracts.addPeerContract, [contractId, peerHostAlias] */
+
+export async function addPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
+    const peerContractId = `peerContract${Date.now()}`;
+    const contractId = args[0]
+    const peerHostAlias = args[1]
+    const resultBytes = await contract.submitTransaction(
+        'AddPeerContract',
+        peerContractId,
+        peerHostAlias
+    );
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
+export async function createPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: CreatePeerContract');
+    const peerContractId = `peerContract${Date.now()}`;
+    const peerHostAlias = args[0]
+    const resultBytes = await contract.submitTransaction(
+        'CreatePeerContract',
+        peerContractId,
+        peerHostAlias
+    );
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
 
 export async function createContract(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateContract');
@@ -155,11 +186,14 @@ export async function createContract(contract: Contract, args: Array<string>): P
     const offer = await readAssetByID(contract, offerId);
     const offerJson = JSON.parse(offer)
 
+    const producerAssetId = "producer:" + offerJson.Offerer;
+    const consumerAssetId = "consumer:" + peerHostAlias;
+
     const resultBytes = await contract.submitTransaction(
         'CreateContract',
         contractId,
-        offerJson.Offerer,
-        peerHostAlias,
+        producerAssetId,
+        consumerAssetId,
         offerJson.effectiveDate,
         String(offerJson.Price),
         String(offerJson.maxAmount),
