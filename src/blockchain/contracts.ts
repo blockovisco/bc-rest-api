@@ -150,12 +150,11 @@ contracts.addPeerContract, [contractId, peerHostAlias] */
 
 export async function addPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
-    const peerContractId = `peerContract${Date.now()}`;
     const contractId = args[0]
     const peerHostAlias = args[1]
     const resultBytes = await contract.submitTransaction(
         'AddPeerContract',
-        peerContractId,
+        contractId,
         peerHostAlias
     );
     const resultJson = utf8Decoder.decode(resultBytes);
@@ -165,8 +164,8 @@ export async function addPeerContract(contract: Contract, args: Array<string>): 
 
 export async function createPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreatePeerContract');
-    const peerContractId = `peerContract${Date.now()}`;
     const peerHostAlias = args[0]
+    const peerContractId = 'peerContract' + peerHostAlias;
     const resultBytes = await contract.submitTransaction(
         'CreatePeerContract',
         peerContractId,
