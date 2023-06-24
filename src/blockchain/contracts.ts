@@ -146,6 +146,31 @@ export async function createOffer(contract: Contract, args: Array<string>): Prom
     return result
 }
 
+export async function createContract(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: CreateContract');
+    const contractId = `contract${Date.now()}`;
+    const offerId = args[0]
+    const peerHostAlias = args[1]
+
+    const offer = await readAssetByID(contract, offerId);
+    const offerJson = JSON.parse(offer)
+
+    const resultBytes = await contract.submitTransaction(
+        'CreateContract',
+        contractId,
+        offerJson.Offerer,
+        peerHostAlias,
+        offerJson.effectiveDate,
+        String(offerJson.Price),
+        String(offerJson.maxAmount),
+        "0"
+    )
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
 export async function assetExists(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Evaluate Transaction: Check if asset exists');
 
@@ -232,14 +257,15 @@ export async function transferAssetAsync(contract: Contract): Promise<void> {
     console.log('*** Transaction committed successfully');
 }
 
-export async function readAssetByID(contract: Contract): Promise<void> {
+export async function readAssetByID(contract: Contract, assetId: string): Promise<string> {
     console.log('\n--> Evaluate Transaction: ReadAsset, function returns asset attributes');
 
-    const resultBytes = await contract.evaluateTransaction('ReadAsset', 'assetId');
+    const resultBytes = await contract.evaluateTransaction('ReadAsset', assetId);
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
     console.log('*** Result:', result);
+    return resultJson;
 }
 
 /**

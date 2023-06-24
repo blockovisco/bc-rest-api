@@ -90,6 +90,10 @@ export const blockchainUpdateConsumerAsset = async function(receiving: number) {
     return await connectAndExecute(contracts.updateConsumerAsset, [peerHostAlias, String(receiving)]);
 }
 
+export const blockchainCreateContract = async(offerId: string) => {
+    return await connectAndExecute(contracts.createContract, [offerId, peerHostAlias])
+}
+
 
 const connectAndExecute = async (func: Function, args: Array<string>) => {
     var result = null;
