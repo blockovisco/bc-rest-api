@@ -87,11 +87,41 @@ export async function createProducerAsset(contract: Contract, args: Array<string
     return result
 }
 
+export async function createConsumerAsset(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: createProducerAsset');
+    
+    console.log(args[0], args[1], args[2]);
+    
+    const resultBytes = await contract.submitTransaction(
+        'CreateConsumerAsset',
+        args[0], //owner
+        args[1], //latitude
+        args[2] // longtitude
+    );
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
 export async function updateProducerAsset(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: updateProducerAsset -> '+args[0]+': '+args[1]);
     
     const resultBytes = await contract.submitTransaction(
         'UpdateProducerAsset',
+        args[0],
+        args[1]
+    );
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
+export async function updateConsumerAsset(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: updateProducerAsset -> '+args[0]+': '+args[1]);
+    
+    const resultBytes = await contract.submitTransaction(
+        'UpdateConsumerAsset',
         args[0],
         args[1]
     );

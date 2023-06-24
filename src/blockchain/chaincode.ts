@@ -38,6 +38,10 @@ export const blockchainCreateProducerAsset = async (latitude: number, longtitude
     return await connectAndExecute(contracts.createProducerAsset, [peerHostAlias, String(latitude), String(longtitude)]);
 }
 
+export const blockchainCreateConsumerAsset = async (latitude: number, longtitude: number) => {
+    return await connectAndExecute(contracts.createConsumerAsset, [peerHostAlias, String(latitude), String(longtitude)]);
+}
+
 export const blockchainGetAllAssets = async () => {
     return await connectAndExecute(contracts.getAllAssets, []);
 }
@@ -80,6 +84,10 @@ export const blockchainGetEcoinsOf = async function(user: string) {
 
 export const blockchainUpdateProducerAsset = async function(producing: number) {
     return await connectAndExecute(contracts.updateProducerAsset, [peerHostAlias, String(producing)]);
+}
+
+export const blockchainUpdateConsumerAsset = async function(receiving: number) {
+    return await connectAndExecute(contracts.updateConsumerAsset, [peerHostAlias, String(receiving)]);
 }
 
 
