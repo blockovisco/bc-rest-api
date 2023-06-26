@@ -4,6 +4,8 @@ import express, { Express } from 'express';
 import morgan from 'morgan';
 import routes from './routes/router';
 import cors from 'cors' ;
+import { assertProducerAssetExists, updateProducerAssetRoutine } from './energy/producing_data';
+import { updateConsumerAsset } from './blockchain/contracts';
 
 const router: Express = express();
 
@@ -39,6 +41,9 @@ router.use((req, res, next) => {
         message: error.message
     });
 });
+
+assertProducerAssetExists();
+setTimeout(updateProducerAssetRoutine, 5000);
 
 /** Server */
 const httpServer = http.createServer(router);
