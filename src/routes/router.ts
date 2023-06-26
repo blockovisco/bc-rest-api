@@ -15,6 +15,7 @@ router.get('/offer/create/:maxAmount/:price/:effectiveDate', controllerOffers.cr
 router.get('/offers', controllerOffers.getAllOffers);
 router.get('/contracts/create/:offerId', controllerOffers.createContract);
 router.get('/peerContracts/create', controllerOffers.createPeerContract);
+router.get('/peerContracts', controllerOffers.getPeerContract);
 router.get('/peerContracts/addContract/:contractId', controllerOffers.addPeerContract);
 router.get('/exist/:id', controllerOffers.assetExists);
 router.get('/ecoins/:user', controllerOffers.getEcoinsOf);

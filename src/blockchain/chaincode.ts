@@ -46,6 +46,10 @@ export const blockchainGetAllAssets = async () => {
     return await connectAndExecute(contracts.getAllAssets, []);
 }
 
+export const blockchainGetPeerContract = async () => {
+    return await connectAndExecute(contracts.getPeerContract, [peerHostAlias]);
+}
+
 export const blockchainInit = async () => {
     await connectAndExecute(contracts.initLedger, []);
 }
@@ -99,7 +103,7 @@ export const blockchainCreatePeerContract = async() => {
 }
 
 export const blockchainAddPeerContract = async(contractId: string) => {
-    return await connectAndExecute(contracts.addPeerContract, [contractId, peerHostAlias])
+    return await connectAndExecute(contracts.addPeerContract, [peerHostAlias, contractId])
 }
 
 const connectAndExecute = async (func: Function, args: Array<string>) => {

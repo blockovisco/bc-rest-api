@@ -60,6 +60,20 @@ export async function getEnergyOfUser(contract: Contract, args: Array<string>): 
     return energyOf;
 }
 
+export async function getPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Evaluate Transaction: GetPeerContract');
+
+    const peerHostAlias = args[0];
+    const peerContractId = 'peerContract:' + peerHostAlias
+
+    const resultBytes = await contract.evaluateTransaction('GetPeerContract', peerContractId);
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+
+    return result;
+}
+
 export async function getAllOffers(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
 
@@ -147,13 +161,14 @@ export async function createOffer(contract: Contract, args: Array<string>): Prom
 contracts.addPeerContract, [contractId, peerHostAlias] */
 
 export async function addPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
-    const contractId = args[0]
-    const peerHostAlias = args[1]
+    console.log('\n--> Submit Transaction: AddPeerContract');
+    const peerHostAlias = args[0]
+    const offerId = args[1]
+    const peerContractId = 'peerContract:' + peerHostAlias
     const resultBytes = await contract.submitTransaction(
         'AddPeerContract',
-        contractId,
-        peerHostAlias
+        peerContractId,
+        offerId
     );
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
@@ -163,7 +178,7 @@ export async function addPeerContract(contract: Contract, args: Array<string>): 
 export async function createPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreatePeerContract');
     const peerHostAlias = args[0]
-    const peerContractId = 'peerContract' + peerHostAlias;
+    const peerContractId = 'peerContract:' + peerHostAlias;
     const resultBytes = await contract.submitTransaction(
         'CreatePeerContract',
         peerContractId,
