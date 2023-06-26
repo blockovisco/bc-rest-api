@@ -19,5 +19,6 @@ router.get('/peerContracts', controllerOffers.getPeerContract);
 router.get('/peerContracts/addContract/:contractId', controllerOffers.addPeerContract);
 router.get('/exist/:id', controllerOffers.assetExists);
 router.get('/ecoins/:user', controllerOffers.getEcoinsOf);
+router.get('/ecoin/unify', controllerAssets.unifyEcoinAsset);
 
 export = router;

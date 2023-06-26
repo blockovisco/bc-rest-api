@@ -6,6 +6,7 @@ import routes from './routes/router';
 import cors from 'cors' ;
 import { assertProducerAssetExists, updateProducerAssetRoutine } from './energy/producing_data';
 import { updateConsumerAsset } from './blockchain/contracts';
+import { executeTranfer } from './energy/energy_transfer';
 
 const router: Express = express();
 
@@ -42,8 +43,9 @@ router.use((req, res, next) => {
     });
 });
 
-assertProducerAssetExists();
-setTimeout(updateProducerAssetRoutine, 5000);
+// assertProducerAssetExists();
+// setTimeout(updateProducerAssetRoutine, 5000);
+// executeTranfer()
 
 /** Server */
 const httpServer = http.createServer(router);

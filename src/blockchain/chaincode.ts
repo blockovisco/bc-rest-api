@@ -7,32 +7,16 @@
 import * as grpc from '@grpc/grpc-js';
 import { connect, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
 import * as crypto from 'crypto';
+import e from 'express';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { certPath, cryptoPath, keyDirectoryPath, peerEndpoint, peerHostAlias, tlsCertPath } from '../config';
 import * as contracts from './contracts'
 
 const channelName = 'mychannel';
 const chaincodeName = 'mysc'
 const mspId = 'Org2MSP'
-const appOrg = 'org2.example.com'
 
-// Path to crypto materials.
-const cryptoPath = path.resolve(__dirname, '..', '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', appOrg);
-
-// Path to user private key directory.
-const keyDirectoryPath = path.resolve(cryptoPath, 'users', 'User1@' + appOrg, 'msp', 'keystore');
-
-// Path to user certificate.
-const certPath = path.resolve(cryptoPath, 'users', 'User1@' + appOrg, 'msp', 'signcerts', 'cert.pem');
-
-// Path to peer tls certificate.
-const tlsCertPath = path.resolve(cryptoPath, 'peers', 'peer0.' + appOrg, 'tls', 'ca.crt');
-
-// Gateway peer endpoint.
-const peerEndpoint = 'localhost:9051';
-
-// Gateway peer SSL host name override.
-const peerHostAlias = 'peer0.' + appOrg;
 
 export const blockchainCreateProducerAsset = async (latitude: number, longtitude: number) => {
     return await connectAndExecute(contracts.createProducerAsset, [peerHostAlias, String(latitude), String(longtitude)]);
@@ -46,7 +30,11 @@ export const blockchainGetAllAssets = async () => {
     return await connectAndExecute(contracts.getAllAssets, []);
 }
 
-export const blockchainGetPeerContract = async () => {
+export const blockchainReadAsset = async (id: string) => {
+    return await connectAndExecute(contracts.readAssetByID, [id]);
+}
+
+export const blockchainGetPeerContract = async (): Promise<JSON> => {
     return await connectAndExecute(contracts.getPeerContract, [peerHostAlias]);
 }
 
@@ -84,6 +72,13 @@ export const blockchainGetListOfEnergyOf = async function(user: string) {
 
 export const blockchainGetEcoinsOf = async function(user: string) {
     return await contracts.getSumOfEcoinsOf(user)
+}
+
+export const blockchainUnifyEnergyAsset = async (mod?: string) => {
+    if(mod != undefined) {
+        return await connectAndExecute(contracts.unifyEcoinAssets, [peerHostAlias, mod])
+    }
+    return await connectAndExecute(contracts.unifyEcoinAssets, [peerHostAlias])
 }
 
 export const blockchainUpdateProducerAsset = async function(producing: number) {

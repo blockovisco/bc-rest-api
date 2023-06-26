@@ -1,8 +1,8 @@
 export class Asset {
     ID: string;
     Name: string;
-    amount: number;
-    owner: string;
+    Amount: number;
+    Owner: string;
 }
 
 export class OfferContract {
