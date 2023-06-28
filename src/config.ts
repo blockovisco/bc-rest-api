@@ -5,6 +5,9 @@ export const isProducer = false;
 export const mspId = 'Org2MSP'
 const appOrg = 'org2.example.com'
 
+// Gateway peer endpoint.
+export const peerEndpoint = 'localhost:9051';
+
 // Path to crypto materials.
 export const cryptoPath = path.resolve(__dirname, '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', appOrg);
 
@@ -16,9 +19,6 @@ export const certPath = path.resolve(cryptoPath, 'users', 'User1@' + appOrg, 'ms
 
 // Path to peer tls certificate.
 export const tlsCertPath = path.resolve(cryptoPath, 'peers', 'peer0.' + appOrg, 'tls', 'ca.crt');
-
-// Gateway peer endpoint.
-export const peerEndpoint = 'localhost:9051';
 
 // Gateway peer SSL host name override.
 export const peerHostAlias = 'peer0.' + appOrg;

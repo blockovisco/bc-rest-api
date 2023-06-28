@@ -64,9 +64,8 @@ export async function getPeerContract(contract: Contract, args: Array<string>): 
     console.log('\n--> Evaluate Transaction: GetPeerContract');
 
     const peerHostAlias = args[0];
-    const peerContractId = 'peerContract:' + peerHostAlias
 
-    const resultBytes = await contract.evaluateTransaction('GetPeerContract', peerContractId);
+    const resultBytes = await contract.submitTransaction('GetPeerContract', peerHostAlias);
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
