@@ -289,30 +289,31 @@ export async function unifyEcoinAssets(contract: Contract, args: Array<string>):
     } else mod = undefined;
 
     var result: Array<Asset> = await blockchainGetListOfEcoinsOf(owner)
+
     if(result == null || result.length == 0) {
+        console.log("No ecoin asset, creating 0 ecoin asset...")
         return await blockchainCreateEcoin(String(mod != undefined ? (mod > 0 ? mod : 0) : 0));
     }
 
-    result.forEach((ecoinAsset) => {
-        ecoinAsset.Amount = 0;
-    })
-
     const newId = `ecoin${Date.now()}`
 
+    var res;
+
     if(mod != undefined) {
-        await contract.submitTransaction(
+        res = await contract.submitTransaction(
             'UnifyEcoinAssets',
             newId,
             owner,
             String(mod)
         );
+    } else {
+        res = await contract.submitTransaction(
+            'UnifyEcoinAssets',
+            newId,
+            owner,
+            "0"
+        );
     }
-    var res = await contract.submitTransaction(
-        'UnifyEcoinAssets',
-        newId,
-        owner,
-        "0"
-    );
 
     const wynik = utf8Decoder.decode(res);
 

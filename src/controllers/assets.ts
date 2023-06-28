@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainGetAllAssets, blockchainInit, blockchainCreateEnergy, blockchainCreateEcoin, blockchainCreateProducerAsset, blockchainUpdateProducerAsset, blockchainCreateConsumerAsset, blockchainUpdateConsumerAsset, blockchainUnifyEnergyAsset} from '../blockchain/chaincode'
+import {blockchainGetAllAssets, blockchainInit, blockchainCreateEnergy, blockchainCreateEcoin, blockchainCreateProducerAsset, blockchainUpdateProducerAsset, blockchainCreateConsumerAsset, blockchainUpdateConsumerAsset, blockchainUnifyEcoinAsset} from '../blockchain/chaincode'
+import { peerHostAlias } from '../config';
 
 const initLedger = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
@@ -77,7 +78,7 @@ const createEcoin = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const unifyEcoinAsset = async (req: Request, res: Response, next: NextFunction) => {
-    const result = await blockchainUnifyEnergyAsset();
+    const result = await blockchainUnifyEcoinAsset(peerHostAlias);
 
     return res.status(200).json(result);
 };

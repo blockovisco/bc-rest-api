@@ -5,7 +5,7 @@ import { apiUrl, latitude, longtitude, maximumProduingValue, weatherApiKey } fro
 export const updateProducerAssetRoutine = async () => {
     const cloudCoverage: number = await getCloudCoverage();
 
-    const energyProducing = (1 - cloudCoverage) * maximumProduingValue;
+    const energyProducing = (1 - cloudCoverage/100) * maximumProduingValue;
     console.log("Updated producing energy: " + energyProducing);
 
     blockchainUpdateProducerAsset(energyProducing);
@@ -22,7 +22,7 @@ export const assertProducerAssetExists = async () => {
 }
 
 const getCloudCoverage = async (): Promise<number> => {
-    var result = 0.5;
+    var result = 50;
     await axios.get(apiUrl + `?key=${weatherApiKey}&q=${latitude},${longtitude}`)
         .then(res => {
             const currentWeather = res.data.current;
@@ -32,7 +32,7 @@ const getCloudCoverage = async (): Promise<number> => {
         })
         .catch((e) => {
             console.log("Failed to fetch weather data:\n" + e);
-            console.log("\nDefaulting to 0.5 cloud coverage...");
+            console.log("\nDefaulting to 50% cloud coverage...");
         })
     
     return result;

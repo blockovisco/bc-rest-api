@@ -10,12 +10,11 @@ import * as crypto from 'crypto';
 import e from 'express';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { certPath, cryptoPath, keyDirectoryPath, peerEndpoint, peerHostAlias, tlsCertPath } from '../config';
+import { certPath, cryptoPath, keyDirectoryPath, mspId, peerEndpoint, peerHostAlias, tlsCertPath } from '../config';
 import * as contracts from './contracts'
 
 const channelName = 'mychannel';
 const chaincodeName = 'mysc'
-const mspId = 'Org2MSP'
 
 
 export const blockchainCreateProducerAsset = async (latitude: number, longtitude: number) => {
@@ -46,8 +45,16 @@ export const blockchainCreateEnergy = async (amount: string) => {
     return await connectAndExecute(contracts.createEnergyAsset, [amount, peerHostAlias])
 }
 
+export const blockchainCreateEnergyFor = async (peer: string, amount: string) => {
+    return await connectAndExecute(contracts.createEnergyAsset, [amount, peer])
+}
+
 export const blockchainCreateEcoin = async (amount: string) => {
     return await connectAndExecute(contracts.createEcoinAsset, [amount, peerHostAlias])
+}
+
+export const blockchainCreateEcoinFor = async (peer: string, amount: string) => {
+    return await connectAndExecute(contracts.createEcoinAsset, [amount, peer])
 }
 // price, maxAmount, effectiveDate
 export const blockchainCreateOffer = async(price: number, maxAmount: number, effectiveDate: string) => {
@@ -74,11 +81,11 @@ export const blockchainGetEcoinsOf = async function(user: string) {
     return await contracts.getSumOfEcoinsOf(user)
 }
 
-export const blockchainUnifyEnergyAsset = async (mod?: string) => {
+export const blockchainUnifyEcoinAsset = async (peer: string, mod?: string) => {
     if(mod != undefined) {
-        return await connectAndExecute(contracts.unifyEcoinAssets, [peerHostAlias, mod])
+        return await connectAndExecute(contracts.unifyEcoinAssets, [peer, mod])
     }
-    return await connectAndExecute(contracts.unifyEcoinAssets, [peerHostAlias])
+    return await connectAndExecute(contracts.unifyEcoinAssets, [peer])
 }
 
 export const blockchainUpdateProducerAsset = async function(producing: number) {

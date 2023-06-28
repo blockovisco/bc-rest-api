@@ -1,4 +1,4 @@
-import { blockchainGetEcoinsOf, blockchainGetPeerContract, blockchainReadAsset } from "../blockchain/chaincode"
+import { blockchainCreateEnergy, blockchainGetEcoinsOf, blockchainGetPeerContract, blockchainReadAsset, blockchainUnifyEcoinAsset } from "../blockchain/chaincode"
 import { peerHostAlias } from "../config";
 
 export const executeTranfer = async () => {
@@ -20,8 +20,15 @@ export const executeTranfer = async () => {
 
         const oneTransferCost = amountToTransfer * offer.Price;
 
-        console.log('user ma '+ userEcoins)
-        console.log('koszt '+oneTransferCost)
+        if( userEcoins >= oneTransferCost) {
+            // trasfer money and energy
+            await blockchainUnifyEcoinAsset(peerHostAlias, String(-oneTransferCost));
+            await blockchainUnifyEcoinAsset(producer, String(oneTransferCost));
+            await blockchainCreateEnergy(String(amountToTransfer));
 
+            console.log(`Energy trasferred from ${producer} to ${peerHostAlias} for $${oneTransferCost}.`)
+        }
     });
+
+    setTimeout(executeTranfer, 60 * 1000);
 } 
