@@ -1,16 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers, blockchainGetEcoinsOf, blockchainGetEnergyOf} from '../blockchain/chaincode'
+import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers, blockchainGetEcoinsOf, blockchainCreateContract, blockchainAddPeerContract, blockchainCreatePeerContract, blockchainGetPeerContract} from '../blockchain/chaincode'
 
 const createOffer = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
-    let amount = parseFloat(req.params.amount);
+    //:maxAmount/:price/:effectiveDate
+    let maxAmount = parseFloat(req.params.maxAmount);
     let price = parseFloat(req.params.price);
+    let effectiveDate = req.params.effectiveDate;
 
-    const result = await blockchainCreateOffer(price, amount);
+    const result = await blockchainCreateOffer(price, maxAmount, effectiveDate);
 
-    return res.status(200).json({
-        message: result
-    });
+    return res.status(200).json(result);
 };
 
 const assetExists = async (req: Request, res: Response, next: NextFunction) => {
@@ -20,17 +20,13 @@ const assetExists = async (req: Request, res: Response, next: NextFunction) => {
     
     const result = await blockchainAssetExists(id);
 
-    return res.status(200).json({
-        message: result
-    });
+    return res.status(200).json(result);
 };
 
 const getAllOffers =async (req: Request, res: Response, next: NextFunction) => {
     const result = await blockchainGetAllOffers();
 
-    return res.status(200).json({
-        message: result
-    });
+    return res.status(200).json(result);
 }
 
 const getEcoinsOf = async (req: Request, res: Response, next: NextFunction) => {
@@ -40,21 +36,39 @@ const getEcoinsOf = async (req: Request, res: Response, next: NextFunction) => {
     
     const result = await blockchainGetEcoinsOf(user);
 
-    return res.status(200).json({
-        ecoins: result
-    });
+    return res.status(200).json(result);
 };
 
-const getEnergyOf = async (req: Request, res: Response, next: NextFunction) => {
+const createContract = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
+    let offerID = req.params.offerId;
 
-    let user: string = req.params.user;
-    
-    const result = await blockchainGetEnergyOf(user);
+    const result = await blockchainCreateContract(offerID);
 
-    return res.status(200).json({
-        ecoins: result
-    });
+    return res.status(200).json(result);
 };
 
-export default { createOffer, assetExists, getAllOffers, getEcoinsOf, getEnergyOf }
+const createPeerContract = async (req: Request, res: Response, next: NextFunction) => {
+
+    const result = await blockchainCreatePeerContract();
+
+    return res.status(200).json(result);
+};
+
+const addPeerContract = async (req: Request, res: Response, next: NextFunction) => {
+    // get some posts
+    let contractId = req.params.contractId;
+
+    const result = await blockchainAddPeerContract(contractId);
+
+    return res.status(200).json(result);
+};
+
+const getPeerContract = async (req: Request, res: Response, next: NextFunction) => {
+
+    const result = await blockchainGetPeerContract();
+
+    return res.status(200).json(result);
+};
+
+export default { createOffer, assetExists, getAllOffers, getEcoinsOf, createContract, createPeerContract, addPeerContract, getPeerContract }

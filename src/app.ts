@@ -2,10 +2,16 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
-import routes from './routes/assets';
+import routes from './routes/router';
+import cors from 'cors' ;
+import { assertProducerAssetExists, updateProducerAssetRoutine } from './energy/producing_data';
+import { updateConsumerAsset } from './blockchain/contracts';
+import { executeTranfer } from './energy/energy_transfer';
+import { isProducer } from './config';
 
 const router: Express = express();
 
+router.use(cors())
 /** Logging */
 router.use(morgan('dev'));
 /** Parse the request */
@@ -37,6 +43,13 @@ router.use((req, res, next) => {
         message: error.message
     });
 });
+
+if(isProducer) {
+    assertProducerAssetExists();
+    setTimeout(updateProducerAssetRoutine, 5000);
+}
+
+// setTimeout(executeTranfer, 60 * 1000);
 
 /** Server */
 const httpServer = http.createServer(router);
