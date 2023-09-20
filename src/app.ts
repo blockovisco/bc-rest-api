@@ -47,9 +47,7 @@ router.use((req, res, next) => {
 if(isProducer) {
     assertProducerAssetExists();
     setTimeout(updateProducerAssetRoutine, 5000);
-}
-
-// setTimeout(executeTranfer, 60 * 1000);
+}else setTimeout(executeTranfer, 60 * 1000);
 
 /** Server */
 const httpServer = http.createServer(router);
