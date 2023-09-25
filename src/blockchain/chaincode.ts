@@ -96,6 +96,18 @@ export const blockchainUpdateConsumerAsset = async function(receiving: number) {
     return await connectAndExecute(contracts.updateConsumerAsset, [peerHostAlias, String(receiving)]);
 }
 
+export const blockchainUpdateEnergyAsset = async function(amount: number) {
+    return await connectAndExecute(contracts.updateEnergyAsset, [String(amount), peerHostAlias])
+}
+
+export const blockchainAddEnergyToAsset = async function(amount: number) {
+    return await connectAndExecute(contracts.addEnergyToAsset, [String(amount), peerHostAlias])
+}
+
+export const blockchainCreateEnergyAsset = async function() {
+    return await connectAndExecute(contracts.createEnergyAsset, [peerHostAlias])
+}
+
 export const blockchainCreateContract = async(offerId: string) => {
     return await connectAndExecute(contracts.createContract, [offerId, peerHostAlias])
 }

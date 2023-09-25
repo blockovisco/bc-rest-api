@@ -231,24 +231,49 @@ export async function assetExists(contract: Contract, args: Array<string>): Prom
  * Submit a transaction synchronously, blocking until it has been committed to the ledger.
  */
 export async function createEnergyAsset(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Submit Transaction: CreateAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
+    console.log('\n--> Submit Transaction: CreateAsset, energy, owner: ' + args[0] + ' amount: ', 0);
 
-    const assetId = `energy${Date.now()}`;
-    await contract.submitTransaction(
-        'CreateAsset',
-        assetId,
-        'energy',
-        args[0],
-        args[1]
+    const assetId = `energy:${args[0]}`
+
+    const alreadyExists = await contract.evaluateTransaction(
+        `AssetExists`,
+        assetId
+    )
+
+    if (!alreadyExists) {
+        return JSON.parse('{"error": "This asset already exists"}');
+    }
+
+    const res = await contract.submitTransaction(
+        'CreateEnergyAsset',
+        args[0]
     );
 
-    let res = '{ "ID": "'+assetId+'", "Name": "energy", "Amount:": "' + args[0] + '", "Owner": "' + args[1] + '" }'
-    console.log('*** Transaction committed successfully:');
-    console.log(res)
+    return JSON.stringify(res).length > 0 ? JSON.parse(`{"success": "true"}`) : JSON.parse(`{"success": "true"}`)
+}
 
-    const result = JSON.parse(res)
+export async function updateEnergyAsset(contract: Contract, args: Array<string>) {
+    console.log('\n--> Submit Transaction: updateEnergyAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
 
-    return result
+    const assetId = `energy:${args[1]}`
+
+    await contract.submitTransaction(
+        `UpdateEnergyAsset`,
+        assetId,
+        args[0]
+    )
+}
+
+export async function addEnergyToAsset(contract: Contract, args: Array<string>) {
+    console.log('\n--> Submit Transaction: updateEnergyAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
+
+    const assetId = `energy:${args[1]}`
+
+    await contract.submitTransaction(
+        `AddAmountToEnergyAsset`,
+        assetId,
+        args[0]
+    )
 }
 
 export async function createEcoinAsset(contract: Contract, args: Array<string>): Promise<JSON> {

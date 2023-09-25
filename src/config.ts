@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-export const isProducer = false;
+export const isProducer = true;
 
 export const mspId = 'Org2MSP'
 const appOrg = 'org2.example.com'

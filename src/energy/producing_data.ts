@@ -1,15 +1,24 @@
 import axios from "axios";
-import { blockchainCreateProducerAsset, blockchainUpdateProducerAsset } from "../blockchain/chaincode";
-import { apiUrl, latitude, longtitude, maximumProduingValue, weatherApiKey } from "./producing_config";
+import { blockchainCreateEnergy, blockchainCreateProducerAsset, blockchainUpdateEnergyAsset, blockchainUpdateProducerAsset, blockchainAddEnergyToAsset, blockchainCreateEnergyAsset } from "../blockchain/chaincode";
+import { apiUrl, latitude, longtitude, maximumPowerUsage, maximumProduingValue, weatherApiKey } from "./producing_config";
 
 export const updateProducerAssetRoutine = async () => {
+
+    const powerUsage = maximumPowerUsage;
+
     const cloudCoverage: number = await getCloudCoverage();
 
     const energyProducing = (1 - cloudCoverage/100) * maximumProduingValue;
-    console.log("Updated producing energy: " + energyProducing);
+    console.log("Energy from solar panels: " + energyProducing);
+    console.log("Power usage: " + powerUsage);
 
-    blockchainUpdateProducerAsset(energyProducing);
+    const energySurplus = energyProducing - powerUsage > 0 ? energyProducing - powerUsage : 0.0;
 
+    console.log("Energy surplus: " + energySurplus);
+
+    blockchainUpdateProducerAsset(energySurplus);
+
+    blockchainAddEnergyToAsset(energySurplus);
 
     const refreshTime = 5 * 60 * 1000;
     setTimeout(updateProducerAssetRoutine, refreshTime);
@@ -18,6 +27,12 @@ export const updateProducerAssetRoutine = async () => {
 export const assertProducerAssetExists = async () => {
     const result = await blockchainCreateProducerAsset(latitude, longtitude);
     console.log("Producer asset assetion:\n");
+    console.log(result)
+}
+
+export const assertEnergyAssetExists = async () => {
+    const result = await blockchainCreateEnergyAsset();
+    console.log("Energy asset assetion:\n");
     console.log(result)
 }
 
