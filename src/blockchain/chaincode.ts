@@ -37,10 +37,6 @@ export const blockchainGetPeerContract = async (): Promise<JSON> => {
     return await connectAndExecute(contracts.getPeerContract, [peerHostAlias]);
 }
 
-export const blockchainInit = async () => {
-    await connectAndExecute(contracts.initLedger, []);
-}
-
 export const blockchainCreateEnergy = async (amount: string) => {
     return await connectAndExecute(contracts.createEnergyAsset, [amount, peerHostAlias])
 }

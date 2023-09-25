@@ -1,15 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainGetAllAssets, blockchainInit, blockchainCreateEnergy, blockchainCreateEcoin, blockchainCreateProducerAsset, blockchainUpdateProducerAsset, blockchainCreateConsumerAsset, blockchainUpdateConsumerAsset, blockchainUnifyEcoinAsset} from '../blockchain/chaincode'
+import {blockchainGetAllAssets, blockchainCreateEnergy, blockchainCreateEcoin, blockchainCreateProducerAsset, blockchainUpdateProducerAsset, blockchainCreateConsumerAsset, blockchainUpdateConsumerAsset, blockchainUnifyEcoinAsset} from '../blockchain/chaincode'
 import { peerHostAlias } from '../config';
-
-const initLedger = async (req: Request, res: Response, next: NextFunction) => {
-    // get some posts
-    
-    blockchainInit();
-    let msg = "Initialized succesfully"
-
-    return res.status(200).json(msg);
-};
 
 const createProducerAsset = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
@@ -32,7 +23,6 @@ const updateProducerAsset = async (req: Request, res: Response, next: NextFuncti
 };
 
 const createConsumerAsset = async (req: Request, res: Response, next: NextFunction) => {
-    // get some posts
     
     let latitude: number = Number(req.params.lat)
     let longtitude: number = Number(req.params.lon)
@@ -83,4 +73,4 @@ const unifyEcoinAsset = async (req: Request, res: Response, next: NextFunction) 
     return res.status(200).json(result);
 };
 
-export default { initLedger, getAllAssets, createAsset, createEcoin, createProducerAsset, updateProducerAsset, createConsumerAsset, updateConsumerAsset, unifyEcoinAsset}
+export default { getAllAssets, createAsset, createEcoin, createProducerAsset, updateProducerAsset, createConsumerAsset, updateConsumerAsset, unifyEcoinAsset}
