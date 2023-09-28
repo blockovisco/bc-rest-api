@@ -1,16 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers, blockchainGetEcoinsOf, blockchainCreateContract, blockchainAddPeerContract, blockchainCreatePeerContract, blockchainGetPeerContract} from '../blockchain/chaincode'
+import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers, blockchainGetEcoinsOf, blockchainCreateContract, blockchainAddPeerContract, blockchainCreatePeerContract, blockchainGetPeerContract, blockchainGetListOfEnergyOf} from '../blockchain/chaincode'
+import { getEnergyOfUser } from '../blockchain/contracts';
+import getEnergyOfThisUser from './assets'
+import { peerHostAlias } from '../config';
 
 const createOffer = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
     //:maxAmount/:price/:effectiveDate
-    let maxAmount = parseFloat(req.params.maxAmount);
+    let amount = parseFloat(req.params.amount);
     let price = parseFloat(req.params.price);
-    let effectiveDate = req.params.effectiveDate;
 
-    const result = await blockchainCreateOffer(price, maxAmount, effectiveDate);
-
+    const result = await blockchainCreateOffer(price, amount);
     return res.status(200).json(result);
+
 };
 
 const assetExists = async (req: Request, res: Response, next: NextFunction) => {
@@ -35,6 +37,14 @@ const getEcoinsOf = async (req: Request, res: Response, next: NextFunction) => {
     let user: string = req.params.user;
     
     const result = await blockchainGetEcoinsOf(user);
+
+    return res.status(200).json(result);
+};
+
+const getEcoinsOfThisUser = async (req: Request, res: Response, next: NextFunction) => {
+    // get some posts
+
+    const result = await blockchainGetEcoinsOf(peerHostAlias);
 
     return res.status(200).json(result);
 };
@@ -71,4 +81,4 @@ const getPeerContract = async (req: Request, res: Response, next: NextFunction) 
     return res.status(200).json(result);
 };
 
-export default { createOffer, assetExists, getAllOffers, getEcoinsOf, createContract, createPeerContract, addPeerContract, getPeerContract }
+export default { createOffer, assetExists, getAllOffers, getEcoinsOf, getEcoinsOfThisUser, createContract, createPeerContract, addPeerContract, getPeerContract }

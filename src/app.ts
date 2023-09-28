@@ -4,7 +4,7 @@ import express, { Express } from 'express';
 import morgan from 'morgan';
 import routes from './routes/router';
 import cors from 'cors' ;
-import { assertProducerAssetExists, updateProducerAssetRoutine, assertEnergyAssetExists } from './energy/producing_data';
+import { assertProducerAssetExists, updateProducerAssetRoutine, assertEnergyAssetExists, assertEcoinAssetExists } from './energy/producing_data';
 import { updateConsumerAsset } from './blockchain/contracts';
 import { executeTranfer } from './energy/energy_transfer';
 import { isProducer } from './config';
@@ -45,6 +45,7 @@ router.use((req, res, next) => {
 });
 
 assertEnergyAssetExists();
+assertEcoinAssetExists();
 
 if(isProducer) {
     assertProducerAssetExists();

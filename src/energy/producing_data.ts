@@ -1,5 +1,5 @@
 import axios from "axios";
-import { blockchainCreateEnergy, blockchainCreateProducerAsset, blockchainUpdateEnergyAsset, blockchainUpdateProducerAsset, blockchainAddEnergyToAsset, blockchainCreateEnergyAsset } from "../blockchain/chaincode";
+import { blockchainCreateEnergy, blockchainCreateProducerAsset, blockchainUpdateEnergyAsset, blockchainUpdateProducerAsset, blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin } from "../blockchain/chaincode";
 import { apiUrl, latitude, longtitude, maximumPowerUsage, maximumProduingValue, weatherApiKey } from "./producing_config";
 
 export const updateProducerAssetRoutine = async () => {
@@ -32,6 +32,12 @@ export const assertProducerAssetExists = async () => {
 
 export const assertEnergyAssetExists = async () => {
     const result = await blockchainCreateEnergyAsset();
+    console.log("Energy asset assetion:\n");
+    console.log(result)
+}
+
+export const assertEcoinAssetExists = async () => {
+    const result = await blockchainCreateEcoin('0');
     console.log("Energy asset assetion:\n");
     console.log(result)
 }

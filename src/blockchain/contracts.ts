@@ -1,5 +1,6 @@
 import { Contract } from '@hyperledger/fabric-gateway';
 import { TextDecoder } from 'util';
+import { peerHostAlias } from '../config';
 import { Asset } from './asset';
 import { blockchainCreateEcoin, blockchainCreateEnergy, blockchainGetListOfEcoinsOf } from './chaincode';
 
@@ -143,14 +144,23 @@ export async function updateConsumerAsset(contract: Contract, args: Array<string
 
 export async function createOffer(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
+
+    const currentEnergy = await getEnergyOfUser(contract, [peerHostAlias]);
+    await new Promise(f => setTimeout(f, 1000));
+    if(JSON.parse(JSON.stringify(currentEnergy))[0].Amount < args[1]) {
+        return JSON.parse(
+            `{
+                "error": "This user doesn't have enough energy produced"
+            }`)
+    }
+
     const offerId = `offer${Date.now()}`;
     const resultBytes = await contract.submitTransaction(
         'CreateOffer',
         offerId,
         args[0], // price
-        args[1], // maxAmount
-        args[2], // effectiveDate
-        args[3]  // peerHostAlias
+        args[1], // amount
+        args[2]  // peerHostAlias
     );
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
