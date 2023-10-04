@@ -11,7 +11,7 @@ Wykonujemy:
 ```
 To odpali sieć z włączonymi certyfikatami i kanałem `mychannel` na którym zostaną połączeni *org1* i *org2*. Następnie odpalamy smart-contract, Można odpalić ich testowy czyli:
 ```
-./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-typescript/ -ccl typescript
+./network.sh deployCC -ccn basic -ccp ../../smart-contracts/ -ccl typescript
 ```
 Natomiast lepiej już odpalić [nasz](https://github.com/blockovisco/smart-contracts), wtedy zamiast tej ścieżki u góry podajemy tą do folderu z kodem. 
 
