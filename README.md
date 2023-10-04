@@ -13,7 +13,7 @@ To odpali sieć z włączonymi certyfikatami i kanałem `mychannel` na którym z
 ```
 ./network.sh deployCC -ccn mysc -ccp ../../smart-contracts/ -ccl typescript
 ```
-Natomiast lepiej już odpalić [nasz](https://github.com/blockovisco/smart-contracts), wtedy zamiast tej ścieżki u góry podajemy tą do folderu z kodem. 
+Natomiast lepiej już odpalić [nasz](https://github.com/blockovisco/smart-contracts), wtedy zamiast tej ścieżki u góry podajemy tą do folderu ze smart contractem. 
 
 
 **Uwaga!** W pliku `src/blockchain/chaincode.ts` definiujemy nazwę smart kontraktu na jakim działamy (`const chaincodeName` gdzieś u góry pliku). Taką samą należy podać w komendzie u góry po argumencie *-ccn*. Na czas pisania tego to było `mysc` 
