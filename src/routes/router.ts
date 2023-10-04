@@ -15,6 +15,8 @@ router.get('/energy', controllerAssets.getEnergyOfThisUser)
 
 router.post('/offer/:amount/:price', controllerOffers.createOffer);
 
+router.post('/energy/add/:amount', controllerAssets.addEnergy);
+
 router.post('/producer/create/:lat/:lon', controllerAssets.createProducerAsset);
 router.post('/producer/update/:prod', controllerAssets.updateProducerAsset);
 router.post('/ecoin/create/:amount', controllerAssets.createEcoin);
@@ -23,6 +25,8 @@ router.post('/consumer/create/:lat/:lon', controllerAssets.createConsumerAsset);
 router.post('/contracts/create/:offerId', controllerOffers.createContract);
 router.post('/peerContracts/create', controllerOffers.createPeerContract);
 router.post('/peerContracts/addContract/:contractId', controllerOffers.addPeerContract);
+
+router.post('/offer/:id', controllerOffers.executeOffer);
 
 // patches
 router.patch('/consumer/update/:recv', controllerAssets.updateConsumerAsset);

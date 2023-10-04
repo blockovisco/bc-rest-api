@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers, blockchainGetEcoinsOf, blockchainCreateContract, blockchainAddPeerContract, blockchainCreatePeerContract, blockchainGetPeerContract, blockchainGetListOfEnergyOf} from '../blockchain/chaincode'
+import {blockchainCreateOffer, blockchainAssetExists, blockchainGetAllOffers, blockchainGetEcoinsOf, blockchainCreateContract, blockchainAddPeerContract, blockchainCreatePeerContract, blockchainGetPeerContract, blockchainGetListOfEnergyOf, blockchainExecuteOffer} from '../blockchain/chaincode'
 import { getEnergyOfUser } from '../blockchain/contracts';
 import getEnergyOfThisUser from './assets'
 import { peerHostAlias } from '../config';
@@ -81,4 +81,12 @@ const getPeerContract = async (req: Request, res: Response, next: NextFunction) 
     return res.status(200).json(result);
 };
 
-export default { createOffer, assetExists, getAllOffers, getEcoinsOf, getEcoinsOfThisUser, createContract, createPeerContract, addPeerContract, getPeerContract }
+const executeOffer = async (req: Request, res: Response, next: NextFunction) => {
+
+    let offerId = req.params.id
+    const result = await blockchainExecuteOffer(offerId);
+
+    return res.status(200).json(result);
+}
+
+export default { createOffer, assetExists, getAllOffers, getEcoinsOf, getEcoinsOfThisUser, createContract, createPeerContract, addPeerContract, getPeerContract, executeOffer }

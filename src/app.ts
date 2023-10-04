@@ -50,7 +50,8 @@ assertEcoinAssetExists();
 if(isProducer) {
     assertProducerAssetExists();
     setTimeout(updateProducerAssetRoutine, 5000);
-}else setTimeout(executeTranfer, 60 * 1000);
+}
+//else setTimeout(executeTranfer, 60 * 1000);
 
 
 

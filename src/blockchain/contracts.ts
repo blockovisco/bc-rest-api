@@ -415,3 +415,31 @@ export async function readAssetByID(contract: Contract, args: Array<string>): Pr
 export function envOrDefault(key: string, defaultValue: string): string {
     return process.env[key] || defaultValue;
 }
+
+export async function executeOffer(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: ExecuteOffer');
+    const peerHostAlias = args[0]
+    const offerId = args[1]
+    const resultBytes = await contract.submitTransaction(
+        'ExecuteOffer',
+        peerHostAlias,
+        offerId
+    );
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
+/*
+export async function updateEnergyAsset(contract: Contract, args: Array<string>) {
+    console.log('\n--> Submit Transaction: updateEnergyAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
+
+    const assetId = `energy:${args[1]}`
+
+    await contract.submitTransaction(
+        `UpdateEnergyAsset`,
+        assetId,
+        args[0]
+    )
+}
+*/ 
