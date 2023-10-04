@@ -20,6 +20,13 @@ Natomiast lepiej już odpalić [nasz](https://github.com/blockovisco/smart-contr
 
 W tym momencie sieć powinna być zdatna do interakcji.
 
+## Wyłączenie sieci
+
+Gdy zmienimy coś w chaincodzie to trzeba zamknąć całą sieć i postawić nową
+```
+./network.sh down
+```
+
 ## Odpalenie api
 Umieścić __to__ repo w folderze np *my-api* w lokalizacji:
 `fabric-samples/asset-transfer-basic/my-api` (chodzi o to aby z tego folderu do  `test-network` prowadziła lokalizacja `../../test-network`).
