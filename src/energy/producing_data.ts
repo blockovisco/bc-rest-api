@@ -1,10 +1,11 @@
 import axios from "axios";
 import { blockchainCreateEnergy, blockchainCreateProducerAsset, blockchainUpdateEnergyAsset, blockchainUpdateProducerAsset, blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin } from "../blockchain/chaincode";
-import { apiUrl, latitude, longtitude, maximumPowerUsage, maximumProduingValue, weatherApiKey } from "./producing_config";
+import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey } from "./producing_config";
+import { getConsume } from "./consume_data";
 
 export const updateProducerAssetRoutine = async () => {
 
-    const powerUsage = maximumPowerUsage;
+    const powerUsage: number = await getConsume();
 
     const cloudCoverage: number = await getCloudCoverage();
 
@@ -12,7 +13,7 @@ export const updateProducerAssetRoutine = async () => {
     console.log("Energy from solar panels: " + energyProducing);
     console.log("Power usage: " + powerUsage);
 
-    const energySurplus = energyProducing - powerUsage > 0 ? energyProducing - powerUsage : 0.0;
+    const energySurplus = energyProducing - powerUsage;
 
     console.log("Energy surplus: " + energySurplus);
 
@@ -20,7 +21,7 @@ export const updateProducerAssetRoutine = async () => {
 
     blockchainAddEnergyToAsset(energySurplus);
 
-    const refreshTime = 5 * 60 * 1000;
+    const refreshTime = frequencySec * 1000;
     setTimeout(updateProducerAssetRoutine, refreshTime);
 }
 
@@ -49,7 +50,8 @@ const getCloudCoverage = async (): Promise<number> => {
             const currentWeather = res.data.current;
             const isDay = currentWeather.is_day;
             const cloudCoverage: number = currentWeather.cloud;
-            result = cloudCoverage * isDay;
+            
+            result = isDay ? cloudCoverage : 1;
         })
         .catch((e) => {
             console.log("Failed to fetch weather data:\n" + e);
