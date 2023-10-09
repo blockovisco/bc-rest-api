@@ -1,7 +1,8 @@
 import axios from "axios";
-import { blockchainCreateEnergy, blockchainCreateProducerAsset, blockchainUpdateEnergyAsset, blockchainUpdateProducerAsset, blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin } from "../blockchain/chaincode";
-import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey } from "./producing_config";
+import { blockchainCreateEnergy, blockchainCreateProducerAsset, blockchainUpdateEnergyAsset, blockchainUpdateProducerAsset, blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainUnifyEcoinAsset } from "../blockchain/chaincode";
+import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey, maxPrice, minPrice } from "./producing_config";
 import { getConsume } from "./consume_data";
+import { peerHostAlias } from "../config";
 
 export const updateProducerAssetRoutine = async () => {
 
@@ -17,9 +18,14 @@ export const updateProducerAssetRoutine = async () => {
 
     console.log("Energy surplus: " + energySurplus);
 
-    blockchainUpdateProducerAsset(energySurplus);
-
-    blockchainAddEnergyToAsset(energySurplus);
+    // blockchainUpdateProducerAsset(energySurplus);
+    if(energySurplus > 0) {
+        await blockchainAddEnergyToAsset(energySurplus);
+        await blockchainCreateSellOffer(energySurplus, minPrice);
+    }
+    else if(energySurplus < 0) {
+        await blockchainCreateBuyOffer(-energySurplus, maxPrice);
+    }
 
     const refreshTime = frequencySec * 1000;
     setTimeout(updateProducerAssetRoutine, refreshTime);
@@ -38,7 +44,7 @@ export const assertEnergyAssetExists = async () => {
 }
 
 export const assertEcoinAssetExists = async () => {
-    const result = await blockchainCreateEcoin('0');
+    const result = await blockchainCreateEcoin('1000');
     console.log("Energy asset assetion:\n");
     console.log(result)
 }

@@ -36,7 +36,7 @@ const fillDevices = () => {
     let length = 0;
     let watts = 0;
     for( let i = 0; i< hWattDevices + mWattDevices + lWattDevices; i++) {
-        start = getRandomBetween(now, now+numberOfPeriods);
+        start = getRandomBetween(now-Math.floor(numberOfPeriods/4), now+numberOfPeriods);
         if(i/hWattDevices < 1){
             watts = 2000;
             length = minutesToFrequency * getRandomBetween(5, 40);

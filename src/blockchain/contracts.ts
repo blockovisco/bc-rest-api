@@ -142,12 +142,12 @@ export async function updateConsumerAsset(contract: Contract, args: Array<string
     return result
 }
 
-export async function createOffer(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Submit Transaction: CreateOffers, function creates and offer');
+export async function createSellOffer(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: CreateSellOffer, function creates and offer');
 
     const currentEnergy = await getEnergyOfUser(contract, [peerHostAlias]);
     await new Promise(f => setTimeout(f, 1000));
-    if(JSON.parse(JSON.stringify(currentEnergy))[0].Amount < args[1]) {
+    if(JSON.parse(JSON.stringify(currentEnergy))[0].Amount < args[0]) {
         return JSON.parse(
             `{
                 "error": "This user doesn't have enough energy produced"
@@ -158,14 +158,41 @@ export async function createOffer(contract: Contract, args: Array<string>): Prom
     const resultBytes = await contract.submitTransaction(
         'CreateOffer',
         offerId,
-        args[0], // price
-        args[1], // amount
-        args[2]  // peerHostAlias
+        args[0], // amount
+        args[1], // price
+        args[2],  // peerHostAlias
+        "sell"
     );
     const resultJson = utf8Decoder.decode(resultBytes);
     const result = JSON.parse(resultJson);
     return result
 }
+
+export async function createBuyOffer(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: CreateBuyOffer, function creates and offer');
+    const currentEcoins = await getEcoinsOfUser(contract, [peerHostAlias]);
+    await new Promise(f => setTimeout(f, 1000));
+    if(JSON.parse(JSON.stringify(currentEcoins))[0].Amount < Number(args[0])*Number(args[1])) {
+        return JSON.parse(
+            `{
+                "error": "This user doesn't have enough ecoins"
+            }`)
+    }
+
+    const offerId = `offer${Date.now()}`;
+    const resultBytes = await contract.submitTransaction(
+        'CreateOffer',
+        offerId,
+        args[0], // amount
+        args[1], // price
+        args[2],  // peerHostAlias
+        "buy"
+    );
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
 /**contracts.createPeerContract, [peerHostAlias]
 contracts.addPeerContract, [contractId, peerHostAlias] */
 

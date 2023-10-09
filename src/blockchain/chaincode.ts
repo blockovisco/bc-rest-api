@@ -52,9 +52,13 @@ export const blockchainCreateEcoin = async (amount: string) => {
 export const blockchainCreateEcoinFor = async (peer: string, amount: string) => {
     return await connectAndExecute(contracts.createEcoinAsset, [amount, peer])
 }
-// price, maxAmount, effectiveDate
-export const blockchainCreateOffer = async(price: number, maxAmount: number) => {
-    return await connectAndExecute(contracts.createOffer, [price.toString(), maxAmount.toString(), peerHostAlias])
+
+export const blockchainCreateSellOffer = async(maxAmount: number, price: number) => {
+    return await connectAndExecute(contracts.createSellOffer, [maxAmount.toString(), price.toString(), peerHostAlias])
+}
+
+export const blockchainCreateBuyOffer = async(maxAmount: number, price: number) => {
+    return await connectAndExecute(contracts.createBuyOffer, [maxAmount.toString(), price.toString(), peerHostAlias])
 }
 
 export const blockchainAssetExists = async(id: string) => {
