@@ -11,6 +11,8 @@ router.get('/peerContracts', controllerOffers.getPeerContract);
 router.get('/ecoins/:user', controllerOffers.getEcoinsOf);
 router.get('/ecoins', controllerOffers.getEcoinsOfThisUser);
 router.get('/energy', controllerAssets.getEnergyOfThisUser)
+router.get("/maxPrice", controllerConfig.getMaxPrice)
+router.get("/minPrice", controllerConfig.getMinPrice)
 
 // posts
 
@@ -29,6 +31,7 @@ router.post('/peerContracts/addContract/:contractId', controllerOffers.addPeerCo
 
 router.post('/offer/:id', controllerOffers.executeOffer);
 router.post('/maxPrice/:maxPrice', controllerConfig.saveMaxPrice)
+router.post('/minPrice/:minPrice', controllerConfig.saveMinPrice)
 
 // patches
 router.patch('/consumer/update/:recv', controllerAssets.updateConsumerAsset);

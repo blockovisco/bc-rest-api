@@ -18,5 +18,6 @@
     ],
     "exclude": [
         "./src/**/*.spec.ts"
-    ]
+    ],
+    "allowJs": true
 }

@@ -1,56 +1,49 @@
 import { NextFunction, Request, Response } from "express"
-import { promises as fsPromise } from "fs"
+import { join } from "path"
+// const fs = require('fs')
+import fs from 'fs'
+import path from "path"
 
-const minPriceFileDir = "../files/minPrice.txt"
-const maxPriceFileDir = "../files/maxPrice.txt"
+const minPriceFileDir = "./files/minPrice.txt"
+const maxPriceFileDir = "./files/maxPrice.txt"
 
 const saveMaxPrice = async (req: Request, res: Response, next: NextFunction) => {
     const maxPrice = req.params.maxPrice;
-    let result = 204;
 
-    await fsPromise.writeFile(maxPriceFileDir, maxPrice, { flag: "w" }
-    ).catch((err) => {
-        console.log(err)
-        result = 500;
-    })
 
-    return res.status(result);
+    fs.writeFileSync(path.resolve(maxPriceFileDir), maxPrice, { flag: "w" })
+
+    return res.status(200).json({ maxPrice: maxPrice })
+
 }
 
 const saveMinPrice = async (req: Request, res: Response, next: NextFunction) => {
-    const maxPrice = req.params.minPrice;
-    let result = 204;
 
-    await fsPromise.writeFile(minPriceFileDir, maxPrice, { flag: "w" }
-    ).catch((err) => {
-        console.log(err)
-        result = 500;
+    const minPrice = req.params.minPrice;
+    await fs.writeFile(path.resolve(minPriceFileDir), minPrice, (err) => {
+        if (err) {
+            console.error(err);
+        }
+        return;
     })
 
-    return res.status(result);
+    return res.status(200).json({ minPrice: minPrice })
+
 }
 
 
 const getMaxPrice = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const maxPrice = await fsPromise.readFile(maxPriceFileDir).then(res => res.toString());
-        return res.status(200).json({ maxPrice: maxPrice })
-    }
-    catch (err) {
-        console.log(err)
-        return res.status(400)
-    }
+
+    const maxPrice = fs.readFileSync(path.resolve(maxPriceFileDir), 'utf8')
+
+    return res.status(200).json({ "maxPrice": maxPrice.toString() })
 }
 
 const getMinPrice = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const minPrice = await fsPromise.readFile(minPriceFileDir).then(res => res.toString());
-        return res.status(200).json({ minPrice: minPrice })
-    }
-    catch (err) {
-        console.log(err)
-        return res.status(400)
-    }
+
+    const minPrice = fs.readFileSync(path.resolve(minPriceFileDir), 'utf8')
+
+    return res.status(200).json({ "minPrice": minPrice.toString() })
 }
 
 export default { saveMaxPrice, saveMinPrice, getMaxPrice, getMinPrice }
