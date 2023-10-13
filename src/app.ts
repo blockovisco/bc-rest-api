@@ -3,7 +3,7 @@ import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
 import routes from './routes/router';
-import cors from 'cors' ;
+import cors from 'cors';
 import { assertProducerAssetExists, updateProducerAssetRoutine, assertEnergyAssetExists, assertEcoinAssetExists } from './energy/producing_data';
 import { updateConsumerAsset } from './blockchain/contracts';
 import { executeTranfer } from './energy/energy_transfer';
@@ -47,11 +47,11 @@ router.use((req, res, next) => {
 assertEnergyAssetExists();
 assertEcoinAssetExists();
 
-if(isProducer) {
+if (isProducer) {
     assertProducerAssetExists();
     setTimeout(updateProducerAssetRoutine, 5000);
 }
-//else setTimeout(executeTranfer, 60 * 1000);
+else setTimeout(executeTranfer, 60 * 1000);
 
 
 

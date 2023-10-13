@@ -1,19 +1,22 @@
 {
-   "extends":"@tsconfig/node14/tsconfig.json",
-   "compilerOptions": {
-       "experimentalDecorators": true,
-       "emitDecoratorMetadata": true,
-       "outDir": "dist",
-       "moduleResolution": "node",
-       "declaration": true,
-       "sourceMap": true,
-       "noImplicitAny": true,
-       "strictPropertyInitialization": false
-   },
-   "include": [
-       "./src/**/*"
-   ],
-   "exclude": [
-       "./src/**/*.spec.ts"
-   ]
+    "extends": "@tsconfig/node14/tsconfig.json",
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "outDir": "dist",
+        "moduleResolution": "node",
+        "declaration": true,
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "strictPropertyInitialization": false,
+        "types": [
+            "node"
+        ]
+    },
+    "include": [
+        "./src/**/*"
+    ],
+    "exclude": [
+        "./src/**/*.spec.ts"
+    ]
 }

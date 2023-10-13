@@ -1,6 +1,7 @@
 import express from 'express';
 import controllerAssets from '../controllers/assets';
 import controllerOffers from '../controllers/offers';
+import controllerConfig from '../controllers/config';
 const router = express.Router();
 
 // gets
@@ -27,6 +28,7 @@ router.post('/peerContracts/create', controllerOffers.createPeerContract);
 router.post('/peerContracts/addContract/:contractId', controllerOffers.addPeerContract);
 
 router.post('/offer/:id', controllerOffers.executeOffer);
+router.post('/maxPrice/:maxPrice', controllerConfig.saveMaxPrice)
 
 // patches
 router.patch('/consumer/update/:recv', controllerAssets.updateConsumerAsset);
