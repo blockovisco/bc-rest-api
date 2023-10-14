@@ -1,6 +1,7 @@
 import express from 'express';
 import controllerAssets from '../controllers/assets';
 import controllerOffers from '../controllers/offers';
+import controllerConfig from '../controllers/config';
 const router = express.Router();
 
 // gets
@@ -10,6 +11,8 @@ router.get('/peerContracts', controllerOffers.getPeerContract);
 router.get('/ecoins/:user', controllerOffers.getEcoinsOf);
 router.get('/ecoins', controllerOffers.getEcoinsOfThisUser);
 router.get('/energy', controllerAssets.getEnergyOfThisUser)
+router.get("/maxPrice", controllerConfig.getMaxPrice)
+router.get("/minPrice", controllerConfig.getMinPrice)
 
 // posts
 
@@ -27,6 +30,8 @@ router.post('/peerContracts/create', controllerOffers.createPeerContract);
 router.post('/peerContracts/addContract/:contractId', controllerOffers.addPeerContract);
 
 router.post('/offer/:id', controllerOffers.executeOffer);
+router.post('/maxPrice/:maxPrice', controllerConfig.saveMaxPrice)
+router.post('/minPrice/:minPrice', controllerConfig.saveMinPrice)
 
 // patches
 router.patch('/consumer/update/:recv', controllerAssets.updateConsumerAsset);

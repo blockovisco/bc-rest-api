@@ -13,6 +13,7 @@ const createProducerAsset = async (req: Request, res: Response, next: NextFuncti
     return res.status(200).json(result);
 };
 
+
 const updateProducerAsset = async (req: Request, res: Response, next: NextFunction) => {
     
     let producing: number = Number(req.params.prod);
