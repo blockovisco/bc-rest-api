@@ -457,6 +457,30 @@ export async function executeOffer(contract: Contract, args: Array<string>): Pro
     return result
 }
 
+export async function getMasterNodeAsset(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Evaluate Transaction: Get Master Node Asset');
+    const resultBytes = await contract.evaluateTransaction(
+        'GetMasterNodeAsset'
+    );
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
+export async function createMasterNodeAsset(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: Create Master Node Asset');
+    const peerHostAlias = args[0]
+
+    const resultBytes = await contract.submitTransaction(
+        'CreateMasterNodeAsset',
+        peerHostAlias
+    );
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result = JSON.parse(resultJson);
+    return result
+}
+
 /*
 export async function updateEnergyAsset(contract: Contract, args: Array<string>) {
     console.log('\n--> Submit Transaction: updateEnergyAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);

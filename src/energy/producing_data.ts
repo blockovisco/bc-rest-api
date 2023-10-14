@@ -1,5 +1,5 @@
 import axios from "axios";
-import { blockchainCreateEnergy, blockchainCreateProducerAsset, blockchainUpdateEnergyAsset, blockchainUpdateProducerAsset, blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainUnifyEcoinAsset } from "../blockchain/chaincode";
+import {  blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset } from "../blockchain/chaincode";
 import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey, maxPrice, minPrice } from "./producing_config";
 import { getConsume } from "./consume_data";
 import { peerHostAlias } from "../config";
@@ -31,10 +31,14 @@ export const updateProducerAssetRoutine = async () => {
     setTimeout(updateProducerAssetRoutine, refreshTime);
 }
 
-export const assertProducerAssetExists = async () => {
-    const result = await blockchainCreateProducerAsset(latitude, longtitude);
-    console.log("Producer asset assetion:\n");
-    console.log(result)
+export const checkIfMasterNodeExists = async () => {
+    const result = await blockchainGetMasterNodeAsset();
+
+    if(result.who == false) {
+        console.log("Currently there is no master node! You are becoming one...")
+    } else {
+        console.log(result)
+    }
 }
 
 export const assertEnergyAssetExists = async () => {
