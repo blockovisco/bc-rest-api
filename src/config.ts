@@ -1,12 +1,16 @@
-import * as path from 'path';
+import * as path from 'path'
+
+// THIS VARIABLE SHOULD NOT BE CHANGED###########
+export let isMasterNode = false; //   ###########
+// ##############################################
 
 export const isProducer = true;
 
-export const mspId = 'Org2MSP'
-const appOrg = 'org2.example.com'
+export const mspId = 'Org1MSP'
+const appOrg = 'org1.example.com'
 
 // Gateway peer endpoint.
-export const peerEndpoint = 'localhost:9051';
+export const peerEndpoint = 'localhost:7051';
 
 // Path to crypto materials.
 export const cryptoPath = path.resolve(__dirname, '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', appOrg);
@@ -22,3 +26,7 @@ export const tlsCertPath = path.resolve(cryptoPath, 'peers', 'peer0.' + appOrg, 
 
 // Gateway peer SSL host name override.
 export const peerHostAlias = 'peer0.' + appOrg;
+
+export const setMasterNode = (isMaster: boolean) => {
+    isMasterNode = isMaster;
+}
