@@ -1,5 +1,5 @@
 import axios from "axios";
-import {  blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset } from "../blockchain/chaincode";
+import {  blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset, blockchainCreateMasterNodeAsset } from "../blockchain/chaincode";
 import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey, maxPrice, minPrice } from "./producing_config";
 import { getConsume } from "./consume_data";
 import { peerHostAlias } from "../config";
@@ -36,8 +36,9 @@ export const checkIfMasterNodeExists = async () => {
 
     if(result.who == false) {
         console.log("Currently there is no master node! You are becoming one...")
+        const result = await blockchainCreateMasterNodeAsset();
     } else {
-        console.log(result)
+        console.log('Master node:' + result.who)
     }
 }
 
