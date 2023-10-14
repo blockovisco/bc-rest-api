@@ -7,7 +7,8 @@ import cors from 'cors';
 import { updateProducerAssetRoutine, assertEnergyAssetExists, assertEcoinAssetExists, checkIfMasterNodeExists } from './energy/producing_data';
 import { updateConsumerAsset } from './blockchain/contracts';
 import { executeTranfer } from './energy/energy_transfer';
-import { isProducer } from './config';
+import { isMasterNode, isProducer } from './config';
+import { masterNodeRoutine } from './energy/master_node';
 
 const router: Express = express();
 
@@ -51,7 +52,6 @@ assertEcoinAssetExists();
 if (isProducer) {
     setTimeout(updateProducerAssetRoutine, 5000);
 }
-
 
 /** Server */
 const httpServer = http.createServer(router);
