@@ -45,3 +45,10 @@ sudo npm start
 - `/exist/{id}` - zwraca informacje czy dany zasób o określonym id istnieje
 - `/ecoins/{user}` - zwraca wszystkie assety ecoina które są powiązane z danym userem
 - `/energy/{user}` - zwraca wszystkie assety energii które są powiązane z danym userem
+
+## WSL
+Jeżeli aplikacja nie może podłączyć się z API a testując API na localhost np. poprzez zapytanie `http://localhost:6060/all` działa, problemem możebyć nie udostępnienie portów poprzez WSL. Aby to zmienić można użyć komendy: 
+```
+netsh interface portproxy add v4tov4 listenport=[PORT] listenaddress=0.0.0.0 connectport=[PORT] connectaddress=[WSL_IP]
+```
+gdzie port to port który chcemy forwardować do naszego komputera, a WSL IP to IP które znajduje się w eth0 na WSL. Można je sprawdzić wpisując komende `ifconfig` w WSL i znajdować się będzie jako inet pod eth0.
