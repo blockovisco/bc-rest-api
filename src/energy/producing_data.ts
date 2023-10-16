@@ -35,7 +35,7 @@ export const updateProducerAssetRoutine = async () => {
 export const checkIfMasterNodeExists = async () => {
     let result = await blockchainGetMasterNodeAsset();
 
-    if(result.who == false) {
+    if(result.who === false) {
         console.log("Currently there is no master node! You are becoming one...")
         result = await blockchainCreateMasterNodeAsset();
         
@@ -43,7 +43,7 @@ export const checkIfMasterNodeExists = async () => {
         console.log('Master node:' + result.who)
     }
 
-    if(result.who == peerHostAlias) {
+    if(result.who === peerHostAlias) {
         console.log("Successfully became master node!")
         setMasterNode(true);
 
