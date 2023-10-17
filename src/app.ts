@@ -4,10 +4,11 @@ import express, { Express } from 'express';
 import morgan from 'morgan';
 import routes from './routes/router';
 import cors from 'cors';
-import { assertProducerAssetExists, updateProducerAssetRoutine, assertEnergyAssetExists, assertEcoinAssetExists } from './energy/producing_data';
+import { updateProducerAssetRoutine, assertEnergyAssetExists, assertEcoinAssetExists, checkIfMasterNodeExists } from './energy/producing_data';
 import { updateConsumerAsset } from './blockchain/contracts';
 import { executeTranfer } from './energy/energy_transfer';
-import { isProducer } from './config';
+import { isMasterNode, isProducer } from './config';
+import { masterNodeRoutine } from './energy/master_node';
 
 const router: Express = express();
 
@@ -44,16 +45,13 @@ router.use((req, res, next) => {
     });
 });
 
+checkIfMasterNodeExists();
 assertEnergyAssetExists();
 assertEcoinAssetExists();
 
 if (isProducer) {
-    assertProducerAssetExists();
     setTimeout(updateProducerAssetRoutine, 5000);
 }
-else setTimeout(executeTranfer, 60 * 1000);
-
-
 
 /** Server */
 const httpServer = http.createServer(router);
