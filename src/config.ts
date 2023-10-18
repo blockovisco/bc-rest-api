@@ -4,9 +4,9 @@ import * as path from 'path'
 export let isMasterNode = false; //   ###########
 // ##############################################
 
-export const masterNodeRoutineTime = 6000;
+export const masterNodeRoutineTime = 30000;
 
-export const isProducer = false;
+export const isProducer = true;
 
 export const mspId = 'Org1MSP'
 const appOrg = 'org1.example.com'

@@ -105,6 +105,10 @@ export const blockchainCreateMasterNodeAsset = async() => {
     return await connectAndExecute(contracts.createMasterNodeAsset, [peerHostAlias])
 }
 
+export const blockchainSelectOffers = async() => {
+    return await connectAndExecute(contracts.selectOffers, [])
+}
+
 const connectAndExecute = async (func: Function, args: Array<string>) => {
     var result = null;
 
