@@ -10,8 +10,10 @@ router.get('/offers', controllerOffers.getAllOffers);
 router.get('/peerContracts', controllerOffers.getPeerContract);
 router.get('/ecoins/:user', controllerOffers.getEcoinsOf);
 router.get('/ecoins', controllerOffers.getEcoinsOfThisUser);
-router.get("/maxPrice", controllerConfig.getMaxPrice)
-router.get("/minPrice", controllerConfig.getMinPrice)
+router.get("/maxPrice", controllerConfig.getMaxPrice);
+router.get("/minPrice", controllerConfig.getMinPrice);
+router.get("/consumedEnergy", controllerConfig.getConsumedEnergy);
+router.get("/producedEnergy", controllerConfig.getProducedEnergy);
 
 // posts
 

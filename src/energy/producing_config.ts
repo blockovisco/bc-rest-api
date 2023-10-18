@@ -5,5 +5,3 @@ export const maximumProduingValue = 1000;
 export const frequencySec = 10;
 export const latitude = 54.3775;
 export const longtitude = 18.6185;
-export const minPrice = 0.1;
-export const maxPrice = 0.12;
