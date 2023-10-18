@@ -2,7 +2,7 @@ import { Contract } from '@hyperledger/fabric-gateway';
 import { TextDecoder } from 'util';
 import { peerHostAlias } from '../config';
 import { Asset } from './asset';
-import { blockchainCreateEcoin, blockchainCreateEnergy, blockchainGetListOfEcoinsOf } from './chaincode';
+import { blockchainCreateEcoin} from './chaincode';
 
 const utf8Decoder = new TextDecoder();
 
@@ -32,33 +32,14 @@ const utf8Decoder = new TextDecoder();
 }
 
 export async function getEcoinsOfUser(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+    console.log('\n--> Evaluate Transaction: GetEcoinsOfUser: ' + args[0]);
 
-    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'ec' ,'ed');
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
-
-    var ecoinsOf = result.filter(function(a: Asset){
-        return a.Owner == args[0]
-    })
-
-    return ecoinsOf;
-}
-
-export async function getEnergyOfUser(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
-
-    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'en' ,'eo');
+    const resultBytes = await contract.evaluateTransaction('GetEcoinsOf', args[0]);
 
     const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
+    console.log(resultJson)
 
-    var energyOf = result.filter(function(a: Asset){
-        return a.Owner == args[0]
-    })
-
-    return energyOf;
+    return JSON.parse(resultJson)
 }
 
 export async function getPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
@@ -145,14 +126,14 @@ export async function updateConsumerAsset(contract: Contract, args: Array<string
 export async function createSellOffer(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateSellOffer, function creates and offer');
 
-    const currentEnergy = await getEnergyOfUser(contract, [peerHostAlias]);
-    await new Promise(f => setTimeout(f, 1000));
-    if(JSON.parse(JSON.stringify(currentEnergy))[0].Amount < args[0]) {
-        return JSON.parse(
-            `{
-                "error": "This user doesn't have enough energy produced"
-            }`)
-    }
+    // const currentEnergy = await getEnergyOfUser(contract, [peerHostAlias]);
+    // await new Promise(f => setTimeout(f, 1000));
+    // if(JSON.parse(JSON.stringify(currentEnergy))[0].Amount < args[0]) {
+    //     return JSON.parse(
+    //         `{
+    //             "error": "This user doesn't have enough energy produced"
+    //         }`)
+    // }
 
     const offerId = `offer${Date.now()}`;
     const resultBytes = await contract.submitTransaction(
@@ -267,51 +248,6 @@ export async function assetExists(contract: Contract, args: Array<string>): Prom
 /**
  * Submit a transaction synchronously, blocking until it has been committed to the ledger.
  */
-export async function createEnergyAsset(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Submit Transaction: CreateAsset, energy, owner: ' + args[0] + ' amount: ', 0);
-
-    const assetId = `energy:${args[0]}`
-
-    const alreadyExists = await contract.evaluateTransaction(
-        `AssetExists`,
-        assetId
-    )
-
-    if (!alreadyExists) {
-        return JSON.parse('{"error": "This asset already exists"}');
-    }
-
-    const res = await contract.submitTransaction(
-        'CreateEnergyAsset',
-        args[0]
-    );
-
-    return JSON.stringify(res).length > 0 ? JSON.parse(`{"success": "true"}`) : JSON.parse(`{"success": "true"}`)
-}
-
-export async function updateEnergyAsset(contract: Contract, args: Array<string>) {
-    console.log('\n--> Submit Transaction: updateEnergyAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
-
-    const assetId = `energy:${args[1]}`
-
-    await contract.submitTransaction(
-        `UpdateEnergyAsset`,
-        assetId,
-        args[0]
-    )
-}
-
-export async function addEnergyToAsset(contract: Contract, args: Array<string>) {
-    console.log('\n--> Submit Transaction: updateEnergyAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
-
-    const assetId = `energy:${args[1]}`
-
-    await contract.submitTransaction(
-        `AddAmountToEnergyAsset`,
-        assetId,
-        args[0]
-    )
-}
 
 export async function createEcoinAsset(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateAsset, ecoin, owner: ' + args[1] + ' amount: ', args[0]);
@@ -334,51 +270,19 @@ export async function createEcoinAsset(contract: Contract, args: Array<string>):
     return result
 }
 
-export async function getSumOfEcoinsOf(owner: string): Promise<number> {
-    var result: Array<Asset> = await blockchainGetListOfEcoinsOf(owner)
-    if(result == null || result.length == 0) return 0;
-    var sum = result.map(asset => asset.Amount).reduce((acc, amount) => acc + amount);
-    return sum;
-}
+export async function addEcoin(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: AddEcoin, ecoin, owner: ' + args[1] + ' amount: ', args[0]);
 
-export async function unifyEcoinAssets(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log("Unifying ecoin assets...")
-    const owner: string = args[0];
-    var mod;
-    if(args[1] != undefined) {
-        mod = Number(args[1]);
-    } else mod = undefined;
+    const resultBytes = await contract.submitTransaction(
+        'AddEcoin',
+        args[0],
+        args[1]
+    );
 
-    var result: Array<Asset> = await blockchainGetListOfEcoinsOf(owner)
+    console.log('*** Transaction committed successfully:');
 
-    if(result == null || result.length == 0) {
-        console.log("No ecoin asset, creating 0 ecoin asset...")
-        return await blockchainCreateEcoin(String(mod != undefined ? (mod > 0 ? mod : 0) : 0));
-    }
-
-    const newId = `ecoin${Date.now()}`
-
-    var res;
-
-    if(mod != undefined) {
-        res = await contract.submitTransaction(
-            'UnifyEcoinAssets',
-            newId,
-            owner,
-            String(mod)
-        );
-    } else {
-        res = await contract.submitTransaction(
-            'UnifyEcoinAssets',
-            newId,
-            owner,
-            "0"
-        );
-    }
-
-    const wynik = utf8Decoder.decode(res);
-
-    return JSON.parse(JSON.stringify(wynik))//JSON.parse(await readAssetByID(contract, [newId]));
+    const resultJson = utf8Decoder.decode(resultBytes);
+    return JSON.parse(resultJson);
 }
 
 /**

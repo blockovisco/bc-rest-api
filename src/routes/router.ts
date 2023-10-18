@@ -10,7 +10,6 @@ router.get('/offers', controllerOffers.getAllOffers);
 router.get('/peerContracts', controllerOffers.getPeerContract);
 router.get('/ecoins/:user', controllerOffers.getEcoinsOf);
 router.get('/ecoins', controllerOffers.getEcoinsOfThisUser);
-router.get('/energy', controllerAssets.getEnergyOfThisUser)
 router.get("/maxPrice", controllerConfig.getMaxPrice);
 router.get("/minPrice", controllerConfig.getMinPrice);
 router.get("/consumedEnergy", controllerConfig.getConsumedEnergy);
@@ -20,12 +19,10 @@ router.get("/producedEnergy", controllerConfig.getProducedEnergy);
 
 router.post('/offer/:amount/:price', controllerOffers.createOffer);
 
-router.post('/energy/add/:amount', controllerAssets.addEnergy);
-
 router.post('/producer/create/:lat/:lon', controllerAssets.createProducerAsset);
 router.post('/producer/update/:prod', controllerAssets.updateProducerAsset);
-router.post('/ecoin/create/:amount', controllerAssets.createEcoin);
-router.post('/ecoin/unify', controllerAssets.unifyEcoinAsset);
+router.post('/ecoin/:amount', controllerAssets.addEcoins);
+router.post('/ecoin/:amount/:user', controllerAssets.addEcoinsTo);
 router.post('/consumer/create/:lat/:lon', controllerAssets.createConsumerAsset);
 router.post('/contracts/create/:offerId', controllerOffers.createContract);
 router.post('/peerContracts/create', controllerOffers.createPeerContract);
@@ -39,8 +36,5 @@ router.post('/minPrice/:minPrice', controllerConfig.saveMinPrice)
 router.patch('/consumer/update/:recv', controllerAssets.updateConsumerAsset);
 
 router.get('/exist/:id', controllerOffers.assetExists);
-
-
-// router.get('/energy/create/:amount', controllerAssets.createAsset);
 
 export = router;

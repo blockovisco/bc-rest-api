@@ -37,16 +37,16 @@ export const blockchainGetPeerContract = async (): Promise<JSON> => {
     return await connectAndExecute(contracts.getPeerContract, [peerHostAlias]);
 }
 
-export const blockchainCreateEnergy = async (amount: string) => {
-    return await connectAndExecute(contracts.createEnergyAsset, [amount, peerHostAlias])
-}
-
-export const blockchainCreateEnergyFor = async (peer: string, amount: string) => {
-    return await connectAndExecute(contracts.createEnergyAsset, [amount, peer])
-}
-
 export const blockchainCreateEcoin = async (amount: string) => {
     return await connectAndExecute(contracts.createEcoinAsset, [amount, peerHostAlias])
+}
+
+export const blockchainAddEcoin = async (amount: string) => {
+    return await connectAndExecute(contracts.addEcoin, [amount, peerHostAlias])
+}
+
+export const blockchainAddEcoinTo = async (amount: string, who: string) => {
+    return await connectAndExecute(contracts.addEcoin, [amount, who])
 }
 
 export const blockchainCreateEcoinFor = async (peer: string, amount: string) => {
@@ -69,23 +69,8 @@ export const blockchainGetAllOffers = async () => {
     return await connectAndExecute(contracts.getAllOffers, []);
 }
 
-export const blockchainGetListOfEcoinsOf = async function(user: string) {
-    return await connectAndExecute(contracts.getEcoinsOfUser, [user])
-}
-
-export const blockchainGetListOfEnergyOf = async function(user: string) {
-    return await connectAndExecute(contracts.getEnergyOfUser, [user])
-}
-
 export const blockchainGetEcoinsOf = async function(user: string) {
-    return await contracts.getSumOfEcoinsOf(user)
-}
-
-export const blockchainUnifyEcoinAsset = async (peer: string, mod?: string) => {
-    if(mod != undefined) {
-        return await connectAndExecute(contracts.unifyEcoinAssets, [peer, mod])
-    }
-    return await connectAndExecute(contracts.unifyEcoinAssets, [peer])
+    return await connectAndExecute(contracts.getEcoinsOfUser, [user])
 }
 
 export const blockchainUpdateProducerAsset = async function(producing: number) {
@@ -94,18 +79,6 @@ export const blockchainUpdateProducerAsset = async function(producing: number) {
 
 export const blockchainUpdateConsumerAsset = async function(receiving: number) {
     return await connectAndExecute(contracts.updateConsumerAsset, [peerHostAlias, String(receiving)]);
-}
-
-export const blockchainUpdateEnergyAsset = async function(amount: number) {
-    return await connectAndExecute(contracts.updateEnergyAsset, [String(amount), peerHostAlias])
-}
-
-export const blockchainAddEnergyToAsset = async function(amount: number) {
-    return await connectAndExecute(contracts.addEnergyToAsset, [String(amount), peerHostAlias])
-}
-
-export const blockchainCreateEnergyAsset = async function() {
-    return await connectAndExecute(contracts.createEnergyAsset, [peerHostAlias])
 }
 
 export const blockchainCreateContract = async(offerId: string) => {
