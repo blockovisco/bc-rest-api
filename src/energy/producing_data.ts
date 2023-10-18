@@ -1,5 +1,5 @@
 import axios from "axios";
-import { blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset, blockchainCreateMasterNodeAsset } from "../blockchain/chaincode";
+import { blockchainAddEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset, blockchainCreateMasterNodeAsset } from "../blockchain/chaincode";
 import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey, maxPrice, minPrice } from "./producing_config";
 import { getConsume } from "./consume_data";
 import { isMasterNode, peerHostAlias, setMasterNode } from "../config";
@@ -67,4 +67,10 @@ const getCloudCoverage = async (): Promise<number> => {
         })
     
     return result;
+}
+
+export const assertEcoinAssetExists = async () => {
+    const result = await blockchainAddEcoin('1000')
+    console.log("Energy asset assetion:\n");
+    console.log(result)
 }
