@@ -2,7 +2,7 @@ import { Contract } from '@hyperledger/fabric-gateway';
 import { TextDecoder } from 'util';
 import { peerHostAlias } from '../config';
 import { Asset } from './asset';
-import { blockchainCreateEcoin, blockchainCreateEnergy, blockchainGetListOfEcoinsOf } from './chaincode';
+import { blockchainCreateEcoin, blockchainGetListOfEcoinsOf } from './chaincode';
 
 const utf8Decoder = new TextDecoder();
 
@@ -44,21 +44,6 @@ export async function getEcoinsOfUser(contract: Contract, args: Array<string>): 
     })
 
     return ecoinsOf;
-}
-
-export async function getEnergyOfUser(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
-
-    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'en' ,'eo');
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
-
-    var energyOf = result.filter(function(a: Asset){
-        return a.Owner == args[0]
-    })
-
-    return energyOf;
 }
 
 export async function getPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
@@ -145,14 +130,14 @@ export async function updateConsumerAsset(contract: Contract, args: Array<string
 export async function createSellOffer(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateSellOffer, function creates and offer');
 
-    const currentEnergy = await getEnergyOfUser(contract, [peerHostAlias]);
-    await new Promise(f => setTimeout(f, 1000));
-    if(JSON.parse(JSON.stringify(currentEnergy))[0].Amount < args[0]) {
-        return JSON.parse(
-            `{
-                "error": "This user doesn't have enough energy produced"
-            }`)
-    }
+    // const currentEnergy = await getEnergyOfUser(contract, [peerHostAlias]);
+    // await new Promise(f => setTimeout(f, 1000));
+    // if(JSON.parse(JSON.stringify(currentEnergy))[0].Amount < args[0]) {
+    //     return JSON.parse(
+    //         `{
+    //             "error": "This user doesn't have enough energy produced"
+    //         }`)
+    // }
 
     const offerId = `offer${Date.now()}`;
     const resultBytes = await contract.submitTransaction(
@@ -267,51 +252,6 @@ export async function assetExists(contract: Contract, args: Array<string>): Prom
 /**
  * Submit a transaction synchronously, blocking until it has been committed to the ledger.
  */
-export async function createEnergyAsset(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Submit Transaction: CreateAsset, energy, owner: ' + args[0] + ' amount: ', 0);
-
-    const assetId = `energy:${args[0]}`
-
-    const alreadyExists = await contract.evaluateTransaction(
-        `AssetExists`,
-        assetId
-    )
-
-    if (!alreadyExists) {
-        return JSON.parse('{"error": "This asset already exists"}');
-    }
-
-    const res = await contract.submitTransaction(
-        'CreateEnergyAsset',
-        args[0]
-    );
-
-    return JSON.stringify(res).length > 0 ? JSON.parse(`{"success": "true"}`) : JSON.parse(`{"success": "true"}`)
-}
-
-export async function updateEnergyAsset(contract: Contract, args: Array<string>) {
-    console.log('\n--> Submit Transaction: updateEnergyAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
-
-    const assetId = `energy:${args[1]}`
-
-    await contract.submitTransaction(
-        `UpdateEnergyAsset`,
-        assetId,
-        args[0]
-    )
-}
-
-export async function addEnergyToAsset(contract: Contract, args: Array<string>) {
-    console.log('\n--> Submit Transaction: updateEnergyAsset, energy, owner: ' + args[1] + ' amount: ', args[0]);
-
-    const assetId = `energy:${args[1]}`
-
-    await contract.submitTransaction(
-        `AddAmountToEnergyAsset`,
-        assetId,
-        args[0]
-    )
-}
 
 export async function createEcoinAsset(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateAsset, ecoin, owner: ' + args[1] + ' amount: ', args[0]);

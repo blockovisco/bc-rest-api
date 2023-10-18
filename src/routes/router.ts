@@ -10,15 +10,12 @@ router.get('/offers', controllerOffers.getAllOffers);
 router.get('/peerContracts', controllerOffers.getPeerContract);
 router.get('/ecoins/:user', controllerOffers.getEcoinsOf);
 router.get('/ecoins', controllerOffers.getEcoinsOfThisUser);
-router.get('/energy', controllerAssets.getEnergyOfThisUser)
 router.get("/maxPrice", controllerConfig.getMaxPrice)
 router.get("/minPrice", controllerConfig.getMinPrice)
 
 // posts
 
 router.post('/offer/:amount/:price', controllerOffers.createOffer);
-
-router.post('/energy/add/:amount', controllerAssets.addEnergy);
 
 router.post('/producer/create/:lat/:lon', controllerAssets.createProducerAsset);
 router.post('/producer/update/:prod', controllerAssets.updateProducerAsset);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {  blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset, blockchainCreateMasterNodeAsset } from "../blockchain/chaincode";
+import { blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset, blockchainCreateMasterNodeAsset } from "../blockchain/chaincode";
 import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey, maxPrice, minPrice } from "./producing_config";
 import { getConsume } from "./consume_data";
 import { isMasterNode, peerHostAlias, setMasterNode } from "../config";
@@ -21,7 +21,6 @@ export const updateProducerAssetRoutine = async () => {
 
     // blockchainUpdateProducerAsset(energySurplus);
     if(energySurplus > 0) {
-        await blockchainAddEnergyToAsset(energySurplus);
         await blockchainCreateSellOffer(energySurplus, minPrice);
     }
     else if(energySurplus < 0) {
@@ -50,12 +49,6 @@ export const checkIfMasterNodeExists = async () => {
         // executing master node routine
         masterNodeRoutine();
     }
-}
-
-export const assertEnergyAssetExists = async () => {
-    const result = await blockchainCreateEnergyAsset();
-    console.log("Energy asset assetion:\n");
-    console.log(result)
 }
 
 export const assertEcoinAssetExists = async () => {
