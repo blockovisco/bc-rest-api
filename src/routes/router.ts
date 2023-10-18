@@ -20,6 +20,7 @@ router.post('/offer/:amount/:price', controllerOffers.createOffer);
 router.post('/producer/create/:lat/:lon', controllerAssets.createProducerAsset);
 router.post('/producer/update/:prod', controllerAssets.updateProducerAsset);
 router.post('/ecoin/:amount', controllerAssets.addEcoins);
+router.post('/ecoin/:amount/:user', controllerAssets.addEcoinsTo);
 router.post('/consumer/create/:lat/:lon', controllerAssets.createConsumerAsset);
 router.post('/contracts/create/:offerId', controllerOffers.createContract);
 router.post('/peerContracts/create', controllerOffers.createPeerContract);
