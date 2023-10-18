@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainGetAllAssets, blockchainCreateEcoin, blockchainCreateProducerAsset, blockchainUpdateProducerAsset, blockchainCreateConsumerAsset, blockchainUpdateConsumerAsset, blockchainUnifyEcoinAsset, blockchainAddEcoin} from '../blockchain/chaincode'
+import {blockchainGetAllAssets, blockchainCreateEcoin, blockchainCreateProducerAsset, blockchainUpdateProducerAsset, blockchainCreateConsumerAsset, blockchainUpdateConsumerAsset, blockchainAddEcoin} from '../blockchain/chaincode'
 import { peerHostAlias } from '../config';
 
 const createProducerAsset = async (req: Request, res: Response, next: NextFunction) => {
@@ -68,10 +68,4 @@ const addEcoins = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json(result);
 };
 
-const unifyEcoinAsset = async (req: Request, res: Response, next: NextFunction) => {
-    const result = await blockchainUnifyEcoinAsset(peerHostAlias);
-
-    return res.status(200).json(result);
-};
-
-export default { getAllAssets, createEcoin, createProducerAsset, updateProducerAsset, createConsumerAsset, updateConsumerAsset, unifyEcoinAsset, addEcoins}
+export default { getAllAssets, createEcoin, createProducerAsset, updateProducerAsset, createConsumerAsset, updateConsumerAsset, addEcoins}

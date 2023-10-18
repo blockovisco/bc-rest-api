@@ -65,19 +65,8 @@ export const blockchainGetAllOffers = async () => {
     return await connectAndExecute(contracts.getAllOffers, []);
 }
 
-export const blockchainGetListOfEcoinsOf = async function(user: string) {
-    return await connectAndExecute(contracts.getEcoinsOfUser, [user])
-}
-
 export const blockchainGetEcoinsOf = async function(user: string) {
-    return await contracts.getSumOfEcoinsOf(user)
-}
-
-export const blockchainUnifyEcoinAsset = async (peer: string, mod?: string) => {
-    if(mod != undefined) {
-        return await connectAndExecute(contracts.unifyEcoinAssets, [peer, mod])
-    }
-    return await connectAndExecute(contracts.unifyEcoinAssets, [peer])
+    return await connectAndExecute(contracts.getEcoinsOfUser, [user])
 }
 
 export const blockchainUpdateProducerAsset = async function(producing: number) {

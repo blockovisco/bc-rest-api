@@ -2,7 +2,7 @@ import { Contract } from '@hyperledger/fabric-gateway';
 import { TextDecoder } from 'util';
 import { peerHostAlias } from '../config';
 import { Asset } from './asset';
-import { blockchainCreateEcoin, blockchainGetListOfEcoinsOf } from './chaincode';
+import { blockchainCreateEcoin} from './chaincode';
 
 const utf8Decoder = new TextDecoder();
 
@@ -32,18 +32,14 @@ const utf8Decoder = new TextDecoder();
 }
 
 export async function getEcoinsOfUser(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+    console.log('\n--> Evaluate Transaction: GetEcoinsOfUser: ' + args[0]);
 
-    const resultBytes = await contract.evaluateTransaction('GetAssetsByRange', 'ec' ,'ed');
+    const resultBytes = await contract.evaluateTransaction('GetEcoinsOf', args[0]);
 
     const resultJson = utf8Decoder.decode(resultBytes);
-    const result = JSON.parse(resultJson);
+    console.log(resultJson)
 
-    var ecoinsOf = result.filter(function(a: Asset){
-        return a.Owner == args[0]
-    })
-
-    return ecoinsOf;
+    return JSON.parse(resultJson)
 }
 
 export async function getPeerContract(contract: Contract, args: Array<string>): Promise<JSON> {
@@ -272,53 +268,6 @@ export async function createEcoinAsset(contract: Contract, args: Array<string>):
     const result = JSON.parse(res)
 
     return result
-}
-
-export async function getSumOfEcoinsOf(owner: string): Promise<number> {
-    var result: Array<Asset> = await blockchainGetListOfEcoinsOf(owner)
-    if(result == null || result.length == 0) return 0;
-    var sum = result.map(asset => asset.Amount).reduce((acc, amount) => acc + amount);
-    return sum;
-}
-
-export async function unifyEcoinAssets(contract: Contract, args: Array<string>): Promise<JSON> {
-    console.log("Unifying ecoin assets...")
-    const owner: string = args[0];
-    var mod;
-    if(args[1] != undefined) {
-        mod = Number(args[1]);
-    } else mod = undefined;
-
-    var result: Array<Asset> = await blockchainGetListOfEcoinsOf(owner)
-
-    if(result == null || result.length == 0) {
-        console.log("No ecoin asset, creating 0 ecoin asset...")
-        return await blockchainCreateEcoin(String(mod != undefined ? (mod > 0 ? mod : 0) : 0));
-    }
-
-    const newId = `ecoin${Date.now()}`
-
-    var res;
-
-    if(mod != undefined) {
-        res = await contract.submitTransaction(
-            'UnifyEcoinAssets',
-            newId,
-            owner,
-            String(mod)
-        );
-    } else {
-        res = await contract.submitTransaction(
-            'UnifyEcoinAssets',
-            newId,
-            owner,
-            "0"
-        );
-    }
-
-    const wynik = utf8Decoder.decode(res);
-
-    return JSON.parse(JSON.stringify(wynik))//JSON.parse(await readAssetByID(contract, [newId]));
 }
 
 export async function addEcoin(contract: Contract, args: Array<string>): Promise<JSON> {
