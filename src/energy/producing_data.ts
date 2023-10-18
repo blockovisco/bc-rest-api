@@ -1,9 +1,11 @@
 import axios from "axios";
 import {  blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset, blockchainCreateMasterNodeAsset } from "../blockchain/chaincode";
-import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey, maxPrice, minPrice } from "./producing_config";
+import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey } from "./producing_config";
 import { getConsume } from "./consume_data";
 import { isMasterNode, peerHostAlias, setMasterNode } from "../config";
 import { masterNodeRoutine } from "./master_node";
+import { readMaxPrice, readMinPrice } from "../services/price_service";
+import { saveConsumedEnergy, saveProducedEnergy } from "../services/energy_service";
 
 export const updateProducerAssetRoutine = async () => {
 
@@ -14,7 +16,8 @@ export const updateProducerAssetRoutine = async () => {
     const energyProducing = (1 - cloudCoverage/100) * maximumProduingValue;
     console.log("Energy from solar panels: " + energyProducing);
     console.log("Power usage: " + powerUsage);
-
+    saveConsumedEnergy(powerUsage);
+    saveProducedEnergy(energyProducing);
     const energySurplus = energyProducing - powerUsage;
 
     console.log("Energy surplus: " + energySurplus);
@@ -22,10 +25,10 @@ export const updateProducerAssetRoutine = async () => {
     // blockchainUpdateProducerAsset(energySurplus);
     if(energySurplus > 0) {
         await blockchainAddEnergyToAsset(energySurplus);
-        await blockchainCreateSellOffer(energySurplus, minPrice);
+        await blockchainCreateSellOffer(energySurplus, Number(readMinPrice()));
     }
     else if(energySurplus < 0) {
-        await blockchainCreateBuyOffer(-energySurplus, maxPrice);
+        await blockchainCreateBuyOffer(-energySurplus, Number(readMaxPrice()));
     }
 
     const refreshTime = frequencySec * 1000;
