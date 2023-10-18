@@ -21,6 +21,7 @@ router.post('/producer/create/:lat/:lon', controllerAssets.createProducerAsset);
 router.post('/producer/update/:prod', controllerAssets.updateProducerAsset);
 router.post('/ecoin/create/:amount', controllerAssets.createEcoin);
 router.post('/ecoin/unify', controllerAssets.unifyEcoinAsset);
+router.post('/ecoin/:amount', controllerAssets.addEcoins);
 router.post('/consumer/create/:lat/:lon', controllerAssets.createConsumerAsset);
 router.post('/contracts/create/:offerId', controllerOffers.createContract);
 router.post('/peerContracts/create', controllerOffers.createPeerContract);
@@ -34,8 +35,5 @@ router.post('/minPrice/:minPrice', controllerConfig.saveMinPrice)
 router.patch('/consumer/update/:recv', controllerAssets.updateConsumerAsset);
 
 router.get('/exist/:id', controllerOffers.assetExists);
-
-
-// router.get('/energy/create/:amount', controllerAssets.createAsset);
 
 export = router;

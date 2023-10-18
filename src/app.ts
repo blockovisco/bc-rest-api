@@ -4,7 +4,7 @@ import express, { Express } from 'express';
 import morgan from 'morgan';
 import routes from './routes/router';
 import cors from 'cors';
-import { updateProducerAssetRoutine, assertEcoinAssetExists, checkIfMasterNodeExists } from './energy/producing_data';
+import { updateProducerAssetRoutine, checkIfMasterNodeExists } from './energy/producing_data';
 import { isMasterNode, isProducer } from './config';
 import { masterNodeRoutine } from './energy/master_node';
 
@@ -44,7 +44,6 @@ router.use((req, res, next) => {
 });
 
 checkIfMasterNodeExists();
-assertEcoinAssetExists();
 
 if (isProducer) {
     setTimeout(updateProducerAssetRoutine, 5000);

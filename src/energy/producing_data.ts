@@ -51,12 +51,6 @@ export const checkIfMasterNodeExists = async () => {
     }
 }
 
-export const assertEcoinAssetExists = async () => {
-    const result = await blockchainCreateEcoin('1000');
-    console.log("Energy asset assetion:\n");
-    console.log(result)
-}
-
 const getCloudCoverage = async (): Promise<number> => {
     var result = 50;
     await axios.get(apiUrl + `?key=${weatherApiKey}&q=${latitude},${longtitude}`)

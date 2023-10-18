@@ -321,6 +321,21 @@ export async function unifyEcoinAssets(contract: Contract, args: Array<string>):
     return JSON.parse(JSON.stringify(wynik))//JSON.parse(await readAssetByID(contract, [newId]));
 }
 
+export async function addEcoin(contract: Contract, args: Array<string>): Promise<JSON> {
+    console.log('\n--> Submit Transaction: AddEcoin, ecoin, owner: ' + args[1] + ' amount: ', args[0]);
+
+    const resultBytes = await contract.submitTransaction(
+        'AddEcoin',
+        args[0],
+        args[1]
+    );
+
+    console.log('*** Transaction committed successfully:');
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    return JSON.parse(resultJson);
+}
+
 /**
  * Submit transaction asynchronously, allowing the application to process the smart contract response (e.g. update a UI)
  * while waiting for the commit notification.
