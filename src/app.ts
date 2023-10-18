@@ -4,9 +4,7 @@ import express, { Express } from 'express';
 import morgan from 'morgan';
 import routes from './routes/router';
 import cors from 'cors';
-import { updateProducerAssetRoutine, assertEnergyAssetExists, assertEcoinAssetExists, checkIfMasterNodeExists } from './energy/producing_data';
-import { updateConsumerAsset } from './blockchain/contracts';
-import { executeTranfer } from './energy/energy_transfer';
+import { assertEcoinAssetExists, updateProducerAssetRoutine, checkIfMasterNodeExists } from './energy/producing_data';
 import { isMasterNode, isProducer } from './config';
 import { masterNodeRoutine } from './energy/master_node';
 
@@ -46,7 +44,6 @@ router.use((req, res, next) => {
 });
 
 checkIfMasterNodeExists();
-assertEnergyAssetExists();
 assertEcoinAssetExists();
 
 if (isProducer) {

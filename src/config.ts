@@ -6,7 +6,7 @@ export let isMasterNode = false; //   ###########
 
 export const masterNodeRoutineTime = 6000;
 
-export const isProducer = true;
+export const isProducer = false;
 
 export const mspId = 'Org1MSP'
 const appOrg = 'org1.example.com'

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {  blockchainAddEnergyToAsset, blockchainCreateEnergyAsset, blockchainCreateEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset, blockchainCreateMasterNodeAsset } from "../blockchain/chaincode";
+import { blockchainAddEcoin, blockchainCreateSellOffer, blockchainCreateBuyOffer, blockchainGetMasterNodeAsset, blockchainCreateMasterNodeAsset } from "../blockchain/chaincode";
 import { apiUrl, latitude, longtitude, frequencySec, maximumProduingValue, weatherApiKey, maxPrice, minPrice } from "./producing_config";
 import { getConsume } from "./consume_data";
 import { isMasterNode, peerHostAlias, setMasterNode } from "../config";
@@ -21,7 +21,6 @@ export const updateProducerAssetRoutine = async () => {
 
     // blockchainUpdateProducerAsset(energySurplus);
     if(energySurplus > 0) {
-        await blockchainAddEnergyToAsset(energySurplus);
         await blockchainCreateSellOffer(energySurplus, minPrice);
     }
     else if(energySurplus < 0) {
@@ -52,18 +51,6 @@ export const checkIfMasterNodeExists = async () => {
     }
 }
 
-export const assertEnergyAssetExists = async () => {
-    const result = await blockchainCreateEnergyAsset();
-    console.log("Energy asset assetion:\n");
-    console.log(result)
-}
-
-export const assertEcoinAssetExists = async () => {
-    const result = await blockchainCreateEcoin('1000');
-    console.log("Energy asset assetion:\n");
-    console.log(result)
-}
-
 const getCloudCoverage = async (): Promise<number> => {
     var result = 50;
     await axios.get(apiUrl + `?key=${weatherApiKey}&q=${latitude},${longtitude}`)
@@ -80,4 +67,10 @@ const getCloudCoverage = async (): Promise<number> => {
         })
     
     return result;
+}
+
+export const assertEcoinAssetExists = async () => {
+    const result = await blockchainAddEcoin('1000')
+    console.log("Energy asset assetion:\n");
+    console.log(result)
 }

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {blockchainGetAllAssets, blockchainCreateEnergy, blockchainCreateEcoin, blockchainCreateProducerAsset, blockchainUpdateProducerAsset, blockchainCreateConsumerAsset, blockchainUpdateConsumerAsset, blockchainUnifyEcoinAsset, blockchainGetListOfEnergyOf, blockchainAddEnergyToAsset} from '../blockchain/chaincode'
+import {blockchainGetAllAssets, blockchainCreateEcoin, blockchainCreateProducerAsset, blockchainUpdateProducerAsset, blockchainCreateConsumerAsset, blockchainUpdateConsumerAsset, blockchainAddEcoin, blockchainAddEcoinTo} from '../blockchain/chaincode'
 import { peerHostAlias } from '../config';
 
 const createProducerAsset = async (req: Request, res: Response, next: NextFunction) => {
@@ -50,20 +50,6 @@ const getAllAssets = async (req: Request, res: Response, next: NextFunction) => 
     return res.status(200).json(result);
 };
 
-const getEnergyOfThisUser = async (req: Request, res: Response, next: NextFunction) => {
-    const result = await blockchainGetListOfEnergyOf(peerHostAlias)
-    return res.status(200).json(result)
-}
-
-const createAsset = async (req: Request, res: Response, next: NextFunction) => {
-    // get some posts
-    let amount: string = req.params.amount;
-
-    const result = await blockchainCreateEnergy(amount);
-
-    return res.status(200).json(result);
-};
-
 const createEcoin = async (req: Request, res: Response, next: NextFunction) => {
     // get some posts
     let amount: string = req.params.amount;
@@ -73,18 +59,23 @@ const createEcoin = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json(result);
 };
 
-const unifyEcoinAsset = async (req: Request, res: Response, next: NextFunction) => {
-    const result = await blockchainUnifyEcoinAsset(peerHostAlias);
+const addEcoins = async (req: Request, res: Response, next: NextFunction) => {
+    // get some posts
+    let amount: string = req.params.amount;
+
+    const result = await blockchainAddEcoin(amount);
 
     return res.status(200).json(result);
 };
 
-const addEnergy = async(req: Request, res: Response, next: NextFunction) => {
+const addEcoinsTo = async (req: Request, res: Response, next: NextFunction) => {
+    // get some posts
+    let amount: string = req.params.amount;
+    let user: string = req.params.user;
 
-    let amount: string = req.params.amount
-    const result = await blockchainAddEnergyToAsset(Number(amount));
+    const result = await blockchainAddEcoinTo(amount, user);
 
     return res.status(200).json(result);
-}
+};
 
-export default { getAllAssets, createAsset, createEcoin, createProducerAsset, updateProducerAsset, createConsumerAsset, updateConsumerAsset, unifyEcoinAsset, getEnergyOfThisUser, addEnergy}
+export default { getAllAssets, createEcoin, createProducerAsset, updateProducerAsset, createConsumerAsset, updateConsumerAsset, addEcoins, addEcoinsTo}
