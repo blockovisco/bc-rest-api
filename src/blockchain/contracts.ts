@@ -151,14 +151,14 @@ export async function createSellOffer(contract: Contract, args: Array<string>): 
 
 export async function createBuyOffer(contract: Contract, args: Array<string>): Promise<JSON> {
     console.log('\n--> Submit Transaction: CreateBuyOffer, function creates and offer');
-    const currentEcoins = await getEcoinsOfUser(contract, [peerHostAlias]);
-    await new Promise(f => setTimeout(f, 1000));
-    if(JSON.parse(JSON.stringify(currentEcoins))[0].Amount < Number(args[0])*Number(args[1])) {
-        return JSON.parse(
-            `{
-                "error": "This user doesn't have enough ecoins"
-            }`)
-    }
+    // const currentEcoins = await getEcoinsOfUser(contract, [peerHostAlias]);
+    // await new Promise(f => setTimeout(f, 1000));
+    // if(JSON.parse(JSON.stringify(currentEcoins))[0].Amount < Number(args[0])*Number(args[1])) {
+    //     return JSON.parse(
+    //         `{
+    //             "error": "This user doesn't have enough ecoins"
+    //         }`)
+    // }
 
     const offerId = `offer${Date.now()}`;
     const resultBytes = await contract.submitTransaction(
@@ -283,6 +283,16 @@ export async function addEcoin(contract: Contract, args: Array<string>): Promise
 
     const resultJson = utf8Decoder.decode(resultBytes);
     return JSON.parse(resultJson);
+}
+
+export async function selectOffers(contract: Contract, args: Array<string>): Promise<void> {
+
+    //skopiowane z getallofers
+    console.log('\n--> Evaluate Transaction: selectOffers, function selects and execute all buy nad sell offers');
+    await contract.submitTransaction(
+        'SelectOffers'
+    );
+    //console.log(JSON.parse(result));
 }
 
 /**

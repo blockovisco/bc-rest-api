@@ -47,7 +47,7 @@ checkIfMasterNodeExists();
 assertEcoinAssetExists();
 
 if (isProducer) {
-    setTimeout(updateProducerAssetRoutine, 5000);
+    setTimeout(updateProducerAssetRoutine, 15000);
 }
 
 /** Server */
