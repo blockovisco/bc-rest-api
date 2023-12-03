@@ -9,10 +9,13 @@ export const masterNodeRoutineTime = 30000;
 export const isProducer = true;
 
 export const mspId = 'Org1MSP'
+// export const mspId = 'Org2MSP'
 const appOrg = 'org1.example.com'
+// const appOrg = 'org2.example.com'
 
 // Gateway peer endpoint.
 export const peerEndpoint = 'localhost:7051';
+// export const peerEndpoint = 'localhost:9051';
 
 // Path to crypto materials.
 export const cryptoPath = path.resolve(__dirname, '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', appOrg);

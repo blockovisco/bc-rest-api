@@ -9,11 +9,15 @@ import { saveConsumedEnergy, saveProducedEnergy } from "../services/energy_servi
 
 export const updateProducerAssetRoutine = async () => {
 
-    const powerUsage: number = await getConsume();
+    // const powerUsage: number = await getConsume();
+    const powerUsage: number = 600;
+    // const powerUsage: number = 300;
 
     const cloudCoverage: number = await getCloudCoverage();
 
-    const energyProducing = (1 - cloudCoverage/100) * maximumProduingValue;
+    //const energyProducing = (1 - cloudCoverage/100) * maximumProduingValue;
+    const energyProducing = 200;
+
     console.log("Energy from solar panels: " + energyProducing);
     console.log("Power usage: " + powerUsage);
     saveConsumedEnergy(powerUsage);
@@ -50,7 +54,7 @@ export const checkIfMasterNodeExists = async () => {
         setMasterNode(true);
 
         // executing master node routine
-        masterNodeRoutine();
+        setTimeout(masterNodeRoutine, 8000);
     }
 }
 
@@ -73,7 +77,7 @@ const getCloudCoverage = async (): Promise<number> => {
 }
 
 export const assertEcoinAssetExists = async () => {
-    const result = await blockchainAddEcoin('1000')
+    const result = await blockchainAddEcoin('10000')
     console.log("Energy asset assetion:\n");
     console.log(result)
 }

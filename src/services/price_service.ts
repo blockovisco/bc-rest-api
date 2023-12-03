@@ -5,7 +5,9 @@ export const minPriceFileDir = "./files/minPrice.txt"
 export const maxPriceFileDir = "./files/maxPrice.txt"
 
 export const readMinPrice = () => {
-    return fs.readFileSync(path.resolve(minPriceFileDir), 'utf8');
+    const res = fs.readFileSync(path.resolve(minPriceFileDir), {encoding: 'utf8', flag: 'r'});
+    console.log(res);
+    return res;
 }
 
 export const readMaxPrice = () => {
